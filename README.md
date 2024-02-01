@@ -3,7 +3,9 @@
 Benvinguts al meu repositori de Python.
 
 ## Els meus programes
+### Activitats
 - [Hello World](hello_world.py)
+  
 ### Bateria 1
 - [Bateria 1,1](bateria1.1.py)
 - [Bateria1.2](bateria1.2.py)
