@@ -1,18 +1,18 @@
-# IntroduccioPython 👨‍💻💾
+# IntroduccioPython 👨‍💻
 
 Benvinguts al meu repositori de Python.👋👋
 
-## Els meus programes😎
+## Els meus programes
 ### Activitats✍✍
 - [Hello World](hello_world.py)
 
 #### Activitats if, else i elif
 - [Discoteca cosmos🎉](discotecacosmos.py)
 - [Temperatura🌡🌡](temperatura.py)
-- [Login😜](login.py)
+- [Login](login.py)
 
 ### Activitats while, break, i continue
-- [Numero Factorial😁(numerofacctorial.py)
+- [Numero Factorial(numerofacctorial.py)
 
 ### Bateria 1
 - [Bateria 1.1](bateria1.1.py)
