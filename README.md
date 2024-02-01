@@ -5,6 +5,8 @@ Benvinguts al meu repositori de Python.
 ## Els meus programes
 ### Activitats
 - [Hello World](hello_world.py)
+#### Activitats if, else , elif
+- [Discoteca cosmos](discotecacosmos.py)
   
 ### Bateria 1
 - [Bateria 1,1](bateria1.1.py)
