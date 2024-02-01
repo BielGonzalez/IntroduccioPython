@@ -12,7 +12,7 @@ Benvinguts al meu repositori de Python.👋👋
 - [Login😜](login.py)
 
 ### Activitats while, break, i continue
-- [Numero Factoria😁](numerofacctorial.py)
+- [Numero Factorial😁(numerofacctorial.py)
 
 ### Bateria 1
 - [Bateria 1.1](bateria1.1.py)
