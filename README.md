@@ -5,8 +5,10 @@ Benvinguts al meu repositori de Python.
 ## Els meus programes
 ### Activitats
 - [Hello World](hello_world.py)
-#### Activitats if, else , elif
+#### Activitats if, else i elif
 - [Discoteca cosmos](discotecacosmos.py)
+- [Temperatura](temperatura.py)
+- [Login](login.py)
   
 ### Bateria 1
 - [Bateria 1,1](bateria1.1.py)
