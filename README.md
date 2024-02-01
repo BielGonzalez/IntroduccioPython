@@ -9,7 +9,7 @@ Benvinguts al meu repositori de Python.
 - [Discoteca cosmos](discotecacosmos.py)
 - [Temperatura](temperatura.py)
 - [Login](login.py)
-### Activitats while
+### Activitats while, break, i continue
 - [Numero Factorial](numerofacctorial.py)
 ### Bateria 1
 - [Bateria 1,1](bateria1.1.py)
