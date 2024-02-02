@@ -30,4 +30,4 @@ Benvinguts al meu repositori de Python.👋👋
 
 ### Bateria 3
 - [Bateria 3.1](bateria3.1.py)
-⌛🕐🕐🕐
+- ⌛🕐🕐🕐
