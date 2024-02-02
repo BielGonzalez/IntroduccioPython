@@ -9,4 +9,4 @@ while num > 0:
         print("Carregant...")
         break
 time.sleep(3)
-print(resultat)
+print("El resultat es: ",resultat)
