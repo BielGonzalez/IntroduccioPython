@@ -30,4 +30,5 @@ Benvinguts al meu repositori de Python.👋👋
 
 ### Bateria 3
 - [Bateria 3.1](bateria3.1.py)
+- [Bateria 3.2](bateria3.2.py)
 - ⌛🕐🕐🕐
