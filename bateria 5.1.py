@@ -4,5 +4,8 @@ while True:
     llista.append(num)
     if "final" in num:
         llista.pop(-1)
-        print(llista)
         break
+resultat = 0
+for i in llista:
+    resultat = resultat + int(i)
+print(resultat)
