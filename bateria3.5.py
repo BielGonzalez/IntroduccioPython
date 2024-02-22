@@ -5,7 +5,7 @@ while numero <= 10:
     while contador <= numero:
         if numero % contador == 0:
             a+=1
-        contador = contador + 1
+        contador += 1
     if a == 2:
         print(numero)
     numero +=1
