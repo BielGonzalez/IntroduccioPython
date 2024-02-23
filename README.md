@@ -31,4 +31,17 @@ Benvinguts al meu repositori de Python.👋👋
 ### Bateria 3
 - [Bateria 3.1](bateria3.1.py)
 - [Bateria 3.2](bateria3.2.py)
-- ⌛🕐🕐🕐
+- [Bateria 3.3](bateria3.3.py)
+- [Bateria 3.4](bateria3.4.py)
+- [Bateria 3.5](bateria3.5.py)
+
+### Bateria 4
+- [Bateria 4.1](bateria4.1.py)
+- [Bateria 4.2](bateria4.2.py)
+- [Bateria 4.3](bateria4.3.py)
+
+### Bateria 5
+- [Bateria 5.1](bateria5.1.py)
+- [Bateria 5.2](bateria5.2.py)
+- [Bateria 5.3](bateria5.3.py)
+- [Bateria 5.4](bateria5.4.py)
