@@ -14,6 +14,22 @@ Benvinguts al meu repositori de Python.👋👋
 ### Activitats while, break, i continue
 - [Numero Factorial](numerofactorial.py)
 
+### Activitats For
+- [Activitat 1](Activitat1for.py)
+- [Activitat 2](actvfor2.py)
+
+### Activitats Strings
+- [Activitat 1](actv1string.py)
+- [Activitat 2](ACTV2string.py)
+- [Activitat 3](actstring.py)
+
+### Calculadora 
+- [Calculadora](calculadora.py)
+
+### Funcions
+- [Daus 🎲🎲](actvrandom.py)
+- [Joc 🎮 Daus 🎲 amb menu](Actv6Funcions.py)
+  
 ### Bateria 1
 - [Bateria 1.1](bateria1.1.py)
 - [Bateria1.2](bateria1.2.py)
