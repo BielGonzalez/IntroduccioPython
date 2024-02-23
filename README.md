@@ -6,12 +6,12 @@ Benvinguts al meu repositori de Python.👋👋
 ### Activitats✍✍
 - [Hello World](hello_world.py)
 
-#### Activitats if, else i elif
+### Activitats If, Else i Elif
 - [Discoteca cosmos🎉](discotecacosmos.py)
 - [Temperatura🌡🌡](temperatura.py)
 - [Login](login.py)
 
-### Activitats while, break, i continue
+### Activitats While, Break, i Continue
 - [Numero Factorial](numerofactorial.py)
 
 ### Activitats For
