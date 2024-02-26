@@ -29,6 +29,12 @@ Benvinguts al meu repositori de Python.👋👋
 ### Funcions
 - [Daus 🎲🎲](actvrandom.py)
 - [Joc 🎮 Daus 🎲 amb menu](Actv6Funcions.py)
+
+### Excepcions
+- [Activitat 1](ExcepcionsACTV1.py)
+- [Activitat 2](ExcepcionsACTV2.py)
+- [Activitat 3](ExcepcionsACTV3.py)
+- [Activitat 4](ExcepcionsACTV4.py)
   
 ### Bateria 1
 - [Bateria 1.1](bateria1.1.py)
