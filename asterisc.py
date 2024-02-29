@@ -39,3 +39,4 @@ while True:
     if vides == 0:
         print("Game Over")
         break
+# info de map, join y srt sacada de https://www.freecodecamp.org/news/python-list-to-string-how-to-convert-lists-in-python/
