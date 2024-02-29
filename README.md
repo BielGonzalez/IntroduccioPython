@@ -21,7 +21,7 @@ Benvinguts al meu repositori de Python.👋👋
 ### Activitats Strings
 - [Activitat 1](actv1string.py)
 - [Activitat 2](ACTV2string.py)
-- [Activitat 3](actstring.py)
+- [Activitat 3](actstring3.py)
 
 ### Calculadora 
 - [Calculadora](calculadora.py)
