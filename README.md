@@ -35,6 +35,9 @@ Benvinguts al meu repositori de Python.👋👋
 - [Activitat 2](ExcepcionsACTV2.py)
 - [Activitat 3](ExcepcionsACTV3.py)
 - [Activitat 4](ExcepcionsACTV4.py)
+
+### Asterisc
+-  [Asterisc](asterisc.py)
   
 ### Bateria 1
 - [Bateria 1.1](bateria1.1.py)
