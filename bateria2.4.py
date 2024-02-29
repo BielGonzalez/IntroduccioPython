@@ -8,5 +8,5 @@ elif nota == 6:
     print("La teva nota es un Bé")
 elif nota == 5:
     print("La teva nota es un Suficient")
-elif nota == 4 or nota == 3 or nota == 2 or nota == 1 or nota == 0:
+elif nota <= 4:
     print("La teva nota es un Insuficient ")
