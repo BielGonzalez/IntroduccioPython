@@ -16,6 +16,7 @@ while True:
     elif dir == "d" and pos_x < 20:
         pos_x += 1
     #actualitzem
+    print(cadena_vora)
     for i in range(len(moviments)):
         if i == 0 or i == 21:
             moviments[i] = "|"
@@ -23,3 +24,5 @@ while True:
             moviments[i] = "*"
         else:
             moviments[i] = " "
+    print(cadena_vora)
+
