@@ -1,42 +1,35 @@
-moviments = [" ", " ", " ", " ",  " ", " ", " ", " ", " ", "*", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "]
-vides = int(input("Quantes vides tens?"))
+moviments = ["|"," ", " ", " ", " ",  " ", " ", " ", " ", " ", "*", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "|"]
+pos_x = 9
+pos_y = 5
+ALTURA = 10
+AMPLADA = 20
+num_linea = 0
+cadena_buida = "|" + " " * AMPLADA + "|"
+cadena_vora = "-" * (AMPLADA+2)
 while True:
-    mov = input("")
-    if mov == "a":
-        posicion_asterisc = moviments.index("*")
-        if posicion_asterisc == 0:
-            # funcion map convierte cada elemento de la lista con la funcion indicada en este caso str.
-            lista_convertida = map(str, moviments)
-            # Join une todos los strings creados por map anteriormente en uno solo
-            resultado = " ".join(lista_convertida)
-            print(resultado)
+    cadena = ""
+    dir = input(":")
+    if dir == "a" and pos_x > 1:
+        pos_x -= 1
+    elif dir == "d" and pos_x < 20:
+        pos_x += 1
+    elif dir == "w" and pos_y > 1:
+        pos_y -= 1
+    elif dir == "s" and pos_y < 8:
+        pos_y += 1
+    for i in moviments:
+        cadena += i
+    for i in range(ALTURA):
+        if i == pos_y:
+            print(cadena)
+        elif i == 0 or i == 9:
+            print(cadena_vora)
         else:
-            moviments.pop(posicion_asterisc)
-            moviments.insert(posicion_asterisc - 1, "*")
-            # funcion map convierte cada elemento de la lista con la funcion indicada en este caso str.
-            lista_convertida = map(str, moviments)
-            # Join une todos los strings creados por map anteriormente en uno solo
-            resultado = " ".join(lista_convertida)
-            print(resultado)
-    if mov == "d":
-        posicion_asterisc2 = moviments.index("*")
-        if posicion_asterisc2 == 19:
-            # funcion map convierte cada elemento de la lista con la funcion indicada en este caso str.
-            lista_convertida = map(str, moviments)
-            # Join une todos los strings creados por map anteriormente en uno solo
-            resultado = " ".join(lista_convertida)
-            print(resultado)
+            print(cadena_buida)
+    for i in range(len(moviments)):
+        if i == 0 or i == 21:
+            moviments[i] = "|"
+        elif i == pos_x:
+            moviments[i] = "*"
         else:
-            moviments.pop(posicion_asterisc2)
-            moviments.insert(posicion_asterisc2 + 1,"*")
-            # funcion map convierte cada elemento de la lista con la funcion indicada en este caso str.
-            lista_convertida = map(str, moviments)
-            # Join une todos los strings creados por map anteriormente en uno solo
-            resultado = " ".join(lista_convertida)
-            print(resultado)
-    if mov == "k":
-        vides -= 1
-    if vides == 0:
-        print("Game Over")
-        break
-# info de map, join y srt sacada de https://www.freecodecamp.org/news/python-list-to-string-how-to-convert-lists-in-python/
+            moviments[i] = " "
