@@ -1,5 +1,5 @@
 numero = 1
-while numero <= 10:
+while numero <= 100:
     contador = 1
     a = 0
     while contador <= numero:
