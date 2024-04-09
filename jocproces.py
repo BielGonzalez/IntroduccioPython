@@ -49,7 +49,7 @@ def crear_texto(texto):
     pantalla.blit(img, (90, 90))
 def imprimir_pantalla_fons(image,x,y):
     # Imprimeixo imatge de fons:
-    background = pygame.image.load(image).convert()
+    background = pygame.image.load(image).convert_alpha()
     pantalla.blit(background, (x, y))
 
 
