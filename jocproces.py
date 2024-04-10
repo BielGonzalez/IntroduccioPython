@@ -2,6 +2,9 @@ import time
 from pygame.locals import *
 import pygame
 
+precision_jugador1 = 0
+precision_jugador2 = 0
+invencibilitat = 2000
 vidas1 = 3
 vidas2 = 3
 disparos_1 = 0
@@ -38,15 +41,23 @@ pygame.display.set_caption("Arcade")
 clock = pygame.time.Clock()
 fps = 60
 
-def crear_texto(texto):
+def crear_texto_putuacions(jugador,texto,x,y):
     seccio_transparent = pygame.Surface((150, 50), pygame.SRCALPHA)
     pygame.draw.rect(seccio_transparent, (0, 0, 0, 100), (0, 0, 240, 120))
     # DIBUIXAR LA SUPERFÍCIE TRANSPARENT A LA FINESTRA
     pantalla.blit(seccio_transparent, (90, 80))
     # FONT I TEXT de tamany 64
-    font = pygame.font.SysFont(None, 26)
-    img = font.render("   Aciertos "+texto+"%", True, (255, 255, 255))
-    pantalla.blit(img, (90, 90))
+    font = pygame.font.SysFont(None, 16)
+    img = font.render("   Encerts "+jugador+"["+texto+"%"+"]", True, (255, 255, 255))
+    pantalla.blit(img, (x, y))
+def crear_texto_putuacions1(jugador,texto,x,y):
+    pygame.draw.rect(seccio_transparent, (0, 0, 0, 100), (0, 0, 240, 120))
+    # DIBUIXAR LA SUPERFÍCIE TRANSPARENT A LA FINESTRA
+    pantalla.blit(seccio_transparent, (90, 80))
+    # FONT I TEXT de tamany 64
+    font = pygame.font.SysFont(None, 16)
+    img = font.render("   Encerts "+jugador+"["+texto+"%"+"]", True, (255, 255, 255))
+    pantalla.blit(img, (x, y))
 def imprimir_pantalla_fons(image,x,y):
     # Imprimeixo imatge de fons:
     background = pygame.image.load(image).convert_alpha()
@@ -55,7 +66,7 @@ def imprimir_pantalla_fons(image,x,y):
 
 while True:
     current_time = pygame.time.get_ticks()
-
+    current_time2 = pygame.time.get_ticks()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -106,7 +117,10 @@ while True:
             pantalla.blit(bala_imatge, bala)  # si no ha sortit la dibuixa
         # Detectar col·lisions jugador 2:
         if player_rect2.colliderect(bala):  # si una bala toca al jugador1 (el seu rectangle)
-            vidas1 -= 1
+            if current_time2 - temps_ultima_bala_jugador2 >= invencibilitat:
+                vidas1 -= 1
+                precision_jugador1 += 1
+                temps_ultima_bala_jugador2 = current_time2
             bales_jugador1.remove(bala)  # eliminem la bala
 
             # mostrem una explosió
@@ -120,7 +134,10 @@ while True:
             pantalla.blit(bala_imatge, bala)
         # Detectar col·lisions jugador 1:
         if player_rect.colliderect(bala):  # si una bala toca al jugador1 (el seu rectangle)
-            vidas2 -= 1
+            if current_time - temps_ultima_bala_jugador1 >= invencibilitat:
+                vidas2 -= 1
+                precision_jugador2 += 1
+                temps_ultima_bala_jugador1 = current_time
             bales_jugador2.remove(bala)  # eliminem la bala
             # mostrem una explosió
             # eliminem el jugador 1 (un temps)
@@ -128,13 +145,14 @@ while True:
     if vidas1 or vidas2 != 0:
         pantalla.blit(player_image, player_rect)
         pantalla.blit(player_image2, player_rect2)
-    if vidas2 == 0:
-        porcentaje_aciertos = int(3/disparos_2 * 100)
-        imprimir_pantalla_fons(win2,0,0)
-        crear_texto(str(porcentaje_aciertos))
-    if vidas1 == 0:
-        porcentaje_aciertos = int(3 / disparos_1 * 100)
-        imprimir_pantalla_fons(win1,0,0)
-        crear_texto(str(porcentaje_aciertos))
+    if vidas2 == 0 or vidas1 == 0:
+        if precision_jugador2 != 0:
+            porcentaje_aciertos = int(precision_jugador2/disparos_2 * 100)
+            imprimir_pantalla_fons(win2,0,0)
+            crear_texto_putuacions("Jugador 1 ",str(porcentaje_aciertos),60,60)
+        if precision_jugador1 != 0:
+            porcentaje_aciertos = int(precision_jugador1/ disparos_1 * 100)
+            imprimir_pantalla_fons(win1,0,0)
+            crear_texto_putuacions1("Jugador 2 ",str(porcentaje_aciertos),110,110)
     pygame.display.update()
     clock.tick(fps)
