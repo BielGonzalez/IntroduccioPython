@@ -37,7 +37,7 @@ pygame.mixer.init()
 pygame.mixer.music.load("assets/musicmenu.mp3")
 pygame.mixer.music.play(-1, 5, 3000)
 pygame.mixer.music.set_volume(0.05)
-pantalla = pygame.display.set_mode((AMPLADA, ALTURA))
+pantalla = pygame.display.set_mode((AMPLADA, ALTURA),pygame.FULLSCREEN)
 pygame.display.set_caption("Black Star")
 background = pygame.image.load(BACKGROUND_IMAGE).convert()
 
@@ -146,7 +146,11 @@ while encendido:
         bales_total_utilitzades_jugador2 = 0
         precisio_jugador1 = 0
         precisio_jugador2 = 0
+        temps_ultim_energia_jugador1 = 0
+        temps_ultim_energia_jugador2 = 0
         temps_inici_partida = current_time
+        tiempo_escudo = 3000
+        tiempo_velocidad = 3500
         draw = False
         # Jugador 1:
         image_player1 = 'assets/nau.png'
@@ -159,10 +163,37 @@ while encendido:
         player_image2 = pygame.image.load(image_player2)
         player_rect2 = player_image2.get_rect(midbottom=(AMPLADA // 2, ALTURA - 155))
         velocitat_nau2 = 2
+
+        instrucciones = True
+        if instrucciones == True:
+            image_player2 = 'assets/nau2.png'
+            player_image2 = pygame.image.load(image_player2)
+            BACKGROUND_IMAGE = 'assets/fondo.png'
+            background = pygame.image.load(BACKGROUND_IMAGE).convert()
+            pantalla.blit(background, (0, 0))
+            pantalla.blit(player_image, player_rect)
+            pantalla.blit(player_image2, player_rect2)
+            TextPantalla(pantalla, None, 17, "Jugador 1",
+                         WHITE, (90, 170))
+            TextPantalla(pantalla, None, 12, "Disparar: W",
+                         WHITE, (240, 170))
+            TextPantalla(pantalla, None, 12, "Moviment: A-D",
+                         WHITE, (240, 180))
+            TextPantalla(pantalla, None, 12, "Bostvelocitat: R",
+                         WHITE, (240, 170))
+            TextPantalla(pantalla, None, 12, "Bostvelocitat: R",
+                         WHITE, (240, 170))
+            TextPantalla(pantalla, None, 17, "Jugador 2" ,
+                         WHITE, (90, 10))
+            pygame.display.update()
+            time.sleep(2)
+            pantalla.blit(background, (0, 0))
+            pantalla.blit(player_image2, player_rect2)
+            pygame.display.update()
+
         while True:
             # contador
             current_time = pygame.time.get_ticks()
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -170,13 +201,13 @@ while encendido:
                 if event.type == KEYDOWN:
                     # jugador 1
                     if event.key == K_w and current_time - temps_ultima_bala_jugador1 >= temps_entre_bales:
-                        bales_jugador1.append(pygame.Rect(player_rect.centerx - 2, player_rect.top, hitbox1, 10))
-                        temps_ultima_bala_jugador1 = current_time
+                        bales_jugador1.append(pygame.Rect(player_rect.centerx -4, player_rect.top, hitbox1, 10))
+                        temps_ultima_bala_jugador1 = pygame.time.get_ticks()
                         disparo_sonido.play()
                     if event.key == K_e and energiajugador1 > 0:
                         invulnerabilitatjugador1 = True
                         energiajugador1 -= 1
-                        temps_ultim_energia_jugador1 = current_time
+                        temps_ultim_energia_jugador1 = pygame.time.get_ticks()
                     if event.key == K_r and energiajugador1 > 0:
                         boostvelocitatjugador1 = True
                         energiajugador1 -= 1
@@ -185,10 +216,11 @@ while encendido:
                         energiajugador1 -= 2
                         vidas2 -= 1
                         bala_imatge = balagrande_imatge
+                        temps_ultim_energia_jugador1 = current_time
                         hitbox1 = 24
                         # jugador 2
                     if event.key == K_UP and current_time - temps_ultima_bala_jugador2 >= temps_entre_bales:
-                        bales_jugador2.append(pygame.Rect(player_rect2.centerx - 2, player_rect2.bottom - 10, hitbox2, 10))
+                        bales_jugador2.append(pygame.Rect(player_rect2.centerx -4, player_rect2.bottom - 10, hitbox2, 10))
                         temps_ultima_bala_jugador2 = current_time
                         disparo_sonido.play()
                     if event.key == K_KP_0 and energiajugador2 > 0:
@@ -197,14 +229,17 @@ while encendido:
                     if event.key == K_RSHIFT and energiajugador2 > 0:
                         boostvelocitatjugador2 = True
                         energiajugador2 -= 1
+                        temps_ultim_energia_jugador1 = current_time
                     if event.key == K_RCTRL and energiajugador2 > 0:
                         bala_imatge2 = balagrande_imatge
                         hitbox2 = 24
+                        temps_ultim_energia_jugador1 = current_time
                         energiajugador2 -= 2
                         vidas1 -= 1
                         # Pause
                     if event.key == K_ESCAPE:
                         pause = True
+
             # Moviment del jugador 1
             keys = pygame.key.get_pressed()
             if keys[K_a]:
@@ -332,6 +367,20 @@ while encendido:
             if energiajugador2 >= 1:
                 imprimir_pantalla_fons(bateria, 270, 10)
 
+            if invulnerabilitatjugador1 == True and current_time - temps_ultim_energia_jugador1 >= tiempo_escudo:
+                invulnerabilitatjugador1 = False
+            if invulnerabilitatjugador2 == True and current_time - temps_ultim_energia_jugador2 >= tiempo_escudo:
+                invulnerabilitatjugador2 = False
+            if boostvelocitatjugador1 == True and current_time - temps_ultim_energia_jugador1 >= tiempo_velocidad:
+                boostvelocitatjugador1 = False
+                velocitat_nau = 2
+            if boostvelocitatjugador2 == True and current_time - temps_ultim_energia_jugador2 >= tiempo_velocidad:
+                boostvelocitatjugador2 = False
+                velocitat_nau2 = 2
+            if boostvelocitatjugador1 == True:
+                velocitat_nau = 4
+            if boostvelocitatjugador2 == True:
+                velocitat_nau2 = 4
 
             timer = int((temps_partida - (current_time - temps_inici_partida)) / 1000)
             if timer < 10:
