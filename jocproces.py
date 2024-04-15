@@ -1,18 +1,23 @@
 import time
 from pygame.locals import *
 import pygame
+import random
 AMPLADA = 320
 ALTURA = 200
 BACKGROUND_IMAGE = 'assets/fondomenu.png'
+fondo = "assets/fondo.png"
 WHITE = (255, 255, 255)
 encendido = True
 partida = False
 vidas1 = 3
 vidas2 = 3
+wins1 = 0
+wins2 = 0
 corazon = 'assets/corazon.png'
 bateria = 'assets/bateria.png'
 win1 = "assets/win1.png"
 win2 = "assets/win2.png"
+personalizar = False
 energia_image = pygame.image.load(bateria)
 bala_imatge_o = pygame.image.load('assets/bala.png')
 bala_imatge = pygame.image.load('assets/bala.png')  # pintem la superficie de color blanc
@@ -31,13 +36,16 @@ temps_poder_escut = 1000  # 1 segon
 temps_poder_velocitat = 3000  # 3 segons
 tiempo_pausa = 0
 temps_partida = 200000  # 5min
+nau3 = "assets/nau.png"
+nau4 = "assets/nau3.png"
+seleccion = 1
 
 pygame.init()
 pygame.mixer.init()
 pygame.mixer.music.load("assets/musicmenu.mp3")
 pygame.mixer.music.play(-1, 5, 3000)
 pygame.mixer.music.set_volume(0.05)
-pantalla = pygame.display.set_mode((AMPLADA, ALTURA),pygame.FULLSCREEN)
+pantalla = pygame.display.set_mode((AMPLADA, ALTURA))
 pygame.display.set_caption("Black Star")
 background = pygame.image.load(BACKGROUND_IMAGE).convert()
 
@@ -95,18 +103,21 @@ def imprimir_menu():
     pantalla.blit(background, (0, 0))
     # Creamos seccion transparente y se imprime
     seccio_transparent = pygame.Surface((320, 200), pygame.SRCALPHA)
-    pygame.draw.rect(seccio_transparent, (0, 0, 0, 100), (0, 35, 140, 68))
+    pygame.draw.rect(seccio_transparent, (0, 0, 0, 100), (0, 35, 140, 88))
     pantalla.blit(seccio_transparent, (90, 30))
     # imprimimos el texto
     TextPantalla(pantalla, None, 24, "1- Creditos", WHITE, (100, 70))
     TextPantalla(pantalla, None, 24, "2- Jugar", WHITE, (100, 90))
-    TextPantalla(pantalla, None, 24, "3- Salir", WHITE, (100, 110))
+    TextPantalla(pantalla, None, 24, "3- Personalizar", WHITE, (100, 110))
+    TextPantalla(pantalla, None, 24, "4- Salir", WHITE, (100, 130))
+    TextPantalla(pantalla, None, 16, "Wins Jugador 2", WHITE, (237, 70))
+    TextPantalla(pantalla, None, 16, "Wins Jugador 1", WHITE, (0, 70))
+    TextPantalla(pantalla, None, 24, str(wins2), WHITE, (267, 85))
+    TextPantalla(pantalla, None, 24, str(wins1), WHITE, (30, 85))
     pygame.display.update()
-
 #Llamamos a la funcion del menu
 imprimir_menu()
 while encendido:
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -116,9 +127,48 @@ while encendido:
             if event.key == K_2:
                 partida = True
             if event.key == K_3:
+                personalizar = True
+            if event.key == K_4:
                 encendido = False
 
+    if personalizar == True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == KEYDOWN:
+                if event.key == K_LEFT:
+                    if seleccion == 2:
+                        seleccion -= 1
+                        print("mondongo")
+                    elif seleccion == 0:
+                        seleccion += 1
+                if event.key == K_RIGHT:
+                    if seleccion < 0:
+                        seleccion == 0
+                    else:
+                        seleccion -= 1
+                        print("mondongaspd")
+                if event.key == K_SPACE:
+                    personalizar == False
+                    imprimir_menu()
+        if seleccion == 1:
+            imprimir_pantalla_fons(fondo, 0, 0)
+            imprimir_pantalla_fons(nau4,80,20)
+            pygame.display.update()
+        if seleccion == 0:
+            imprimir_pantalla_fons(fondo, 0, 0)
+            imprimir_pantalla_fons(nau3,80,20)
+            pygame.display.update()
+        clock.tick(fps)
     if partida == True:
+        decision_astronauta1 = random.randint(1, 7)
+        decision_astronauta2 = random.randint(1, 7)
+        while True:
+            if decision_astronauta1 == decision_astronauta2:
+                decision_astronauta1 = random.randint(1,7)
+                decision_astronauta2 = random.randint(1,7)
+            if decision_astronauta1 != decision_astronauta2:
+                break
         hitbox1 = 8
         hitbox2 = 8
         pygame.mixer_music.stop()
@@ -126,13 +176,20 @@ while encendido:
         pygame.mixer.music.play(-1, 5, 3000)
         pygame.mixer.music.set_volume(0.35)
         disparo_sonido = pygame.mixer.Sound("assets/sonidodisparo.mp3")
-        disparo_sonido.set_volume(.05)
+        disparo_sonido.set_volume(0.15)
         explosion = pygame.mixer.Sound("assets/explosion.mp3")
         explosion.set_volume(0.25)
         sonido_victoria = pygame.mixer.Sound("assets/sonidovictoria.mp3")
         sonido_victoria.set_volume(0.15)
         current_time = pygame.time.get_ticks()
         vidas1 = 3
+        austronauta1 = "assets/astronauta1.png"
+        austronauta2 = "assets/astronauta2.png"
+        austronauta3 = "assets/astronauta3.png"
+        austronauta4 = "assets/astronauta4.png"
+        austronauta5 = "assets/astronauta5.png"
+        austronauta6 = "assets/astronauta6.png"
+        austronauta7 = "assets/astronauta7.png"
         vidas2 = 3
         BACKGROUND_IMAGE = 'assets/fondo.png'
         pause = False
@@ -153,7 +210,10 @@ while encendido:
         tiempo_velocidad = 3500
         draw = False
         # Jugador 1:
-        image_player1 = 'assets/nau.png'
+        if seleccion == 1:
+            image_player1 = 'assets/nau3.png'
+        elif seleccion == 0:
+            image_player1 = 'assets/nau.png'
         player_image = pygame.image.load(image_player1)
         player_rect = player_image.get_rect(midbottom=(AMPLADA // 2, ALTURA - 15))
         velocitat_nau = 2
@@ -175,18 +235,30 @@ while encendido:
             pantalla.blit(player_image2, player_rect2)
             TextPantalla(pantalla, None, 17, "Jugador 1",
                          WHITE, (90, 170))
-            TextPantalla(pantalla, None, 12, "Disparar: W",
-                         WHITE, (240, 170))
-            TextPantalla(pantalla, None, 12, "Moviment: A-D",
-                         WHITE, (240, 180))
-            TextPantalla(pantalla, None, 12, "Bostvelocitat: R",
-                         WHITE, (240, 170))
-            TextPantalla(pantalla, None, 12, "Bostvelocitat: R",
-                         WHITE, (240, 170))
+            TextPantalla(pantalla, None, 16, "Disparar: W",
+                         WHITE, (190, 150))
+            TextPantalla(pantalla, None, 16, "Moviment: A-D",
+                         WHITE, (190, 140))
+            TextPantalla(pantalla, None, 16, "Bostvelocitat: R",
+                         WHITE, (190, 180))
+            TextPantalla(pantalla, None, 16, "Escudo: E",
+                         WHITE, (190, 170))
+            TextPantalla(pantalla, None, 16, "Bala grande: CNTLIZQ",
+                         WHITE, (190, 160))
+            TextPantalla(pantalla, None, 16, "Disparar: UP",
+                         WHITE, (190, 20))
+            TextPantalla(pantalla, None, 16, "Moviment: LEFT-RIGTH",
+                         WHITE, (190, 10))
+            TextPantalla(pantalla, None, 16, "Bostvelocitat: NUM.0",
+                         WHITE, (190, 50))
+            TextPantalla(pantalla, None, 16, "Escudo: DOWN",
+                         WHITE, (190, 40))
+            TextPantalla(pantalla, None, 16, "Bala grande: CNTLIZQ",
+                         WHITE, (190, 30))
             TextPantalla(pantalla, None, 17, "Jugador 2" ,
                          WHITE, (90, 10))
             pygame.display.update()
-            time.sleep(2)
+            time.sleep(4)
             pantalla.blit(background, (0, 0))
             pantalla.blit(player_image2, player_rect2)
             pygame.display.update()
@@ -204,17 +276,16 @@ while encendido:
                         bales_jugador1.append(pygame.Rect(player_rect.centerx -4, player_rect.top, hitbox1, 10))
                         temps_ultima_bala_jugador1 = pygame.time.get_ticks()
                         disparo_sonido.play()
-                    if event.key == K_e and energiajugador1 > 0:
+                    if event.key == K_e and energiajugador1 >= 1:
                         invulnerabilitatjugador1 = True
                         energiajugador1 -= 1
                         temps_ultim_energia_jugador1 = pygame.time.get_ticks()
-                    if event.key == K_r and energiajugador1 > 0:
+                    if event.key == K_r and energiajugador1 >= 1:
                         boostvelocitatjugador1 = True
                         energiajugador1 -= 1
                         temps_ultim_energia_jugador1 = current_time
-                    if event.key == K_f and energiajugador1 > 0:
+                    if event.key == K_f and energiajugador1 >= 2:
                         energiajugador1 -= 2
-                        vidas2 -= 1
                         bala_imatge = balagrande_imatge
                         temps_ultim_energia_jugador1 = current_time
                         hitbox1 = 24
@@ -223,19 +294,18 @@ while encendido:
                         bales_jugador2.append(pygame.Rect(player_rect2.centerx -4, player_rect2.bottom - 10, hitbox2, 10))
                         temps_ultima_bala_jugador2 = current_time
                         disparo_sonido.play()
-                    if event.key == K_KP_0 and energiajugador2 > 0:
+                    if event.key == K_KP_0 and energiajugador2 >= 1:
                         invulnerabilitatjugador2 = True
                         energiajugador2 -= 1
-                    if event.key == K_RSHIFT and energiajugador2 > 0:
+                        temps_ultim_energia_jugador2 = current_time
+                    if event.key == K_DOWN and energiajugador2 >= 1:
                         boostvelocitatjugador2 = True
                         energiajugador2 -= 1
-                        temps_ultim_energia_jugador1 = current_time
-                    if event.key == K_RCTRL and energiajugador2 > 0:
+                        temps_ultim_energia_jugador2 = current_time
+                    if event.key == K_RCTRL and energiajugador2 >= 2:
                         bala_imatge2 = balagrande_imatge
                         hitbox2 = 24
-                        temps_ultim_energia_jugador1 = current_time
                         energiajugador2 -= 2
-                        vidas1 -= 1
                         # Pause
                     if event.key == K_ESCAPE:
                         pause = True
@@ -263,6 +333,7 @@ while encendido:
             for bala in bales_jugador1:  # bucle que recorre totes les bales
                 bala.y -= velocitat_bales + 0.5  # mou la bala
                 if bala.bottom < 0 or bala.top > ALTURA:  # comprova que no ha sortit de la pantalla
+                    bales_total_utilitzades_jugador1 += 1
                     bales_jugador1.remove(bala)  # si ha sortit elimina la bala
                 else:
                     pantalla.blit(bala_imatge, bala)  # si no ha sortit la dibuixa
@@ -271,6 +342,7 @@ while encendido:
                     if current_time - temps_ultim_golp_jugador2 >= temps_invicibilitat and invulnerabilitatjugador2 == False:
                         vidas1 -= 1
                         precisio_jugador1 += 1
+                        bales_total_utilitzades_jugador1 += 1
                         explosion.play()
                         image_player2 = 'assets/explosion.png'
                         player_image2 = pygame.image.load(image_player2)
@@ -295,6 +367,7 @@ while encendido:
                         for bala in bales_jugador2:
                             bales_jugador2.remove(bala)
                         bales_total_utilitzades_jugador2 += 1
+
                     except:
                         continue
                     # mostrem una explosió
@@ -305,6 +378,7 @@ while encendido:
             for bala in bales_jugador2:
                 bala.y += velocitat_bales
                 if bala.bottom < 0 or bala.top > ALTURA:
+                    bales_total_utilitzades_jugador2 += 1
                     bales_jugador2.remove(bala)
                 else:
                     pantalla.blit(bala_imatge2, bala)
@@ -312,8 +386,8 @@ while encendido:
                 if player_rect.colliderect(bala):  # si una bala toca al jugador1 (el seu rectangle)
                     if current_time - temps_ultim_golp_jugador1 >= temps_invicibilitat and invulnerabilitatjugador1 == False:
                         vidas2 -= 1
-                        bales_total_utilitzades_jugador2 += 1
                         precisio_jugador2 += 1
+                        bales_total_utilitzades_jugador2 += 1
                         image_player1 = 'assets/explosion.png'
                         explosion.play()
                         player_image = pygame.image.load(image_player1)
@@ -340,19 +414,46 @@ while encendido:
                         bales_total_utilitzades_jugador1 += 1
                     except:
                         continue
-
+            if decision_astronauta1 == 1:
+                imprimir_pantalla_fons(austronauta1,0,0)
+            if decision_astronauta1 == 2:
+                imprimir_pantalla_fons(austronauta2,0,0)
+            if decision_astronauta1 == 3:
+                imprimir_pantalla_fons(austronauta3,0,0)
+            if decision_astronauta1 == 4:
+                imprimir_pantalla_fons(austronauta4,0,0)
+            if decision_astronauta1 == 5:
+                imprimir_pantalla_fons(austronauta5,0,0)
+            if decision_astronauta1 == 6:
+                imprimir_pantalla_fons(austronauta6,0,0)
+            if decision_astronauta1 == 7:
+                imprimir_pantalla_fons(austronauta7,0,0)
+            if decision_astronauta2 == 1:
+                imprimir_pantalla_fons(austronauta1,0,180)
+            if decision_astronauta2 == 2:
+                imprimir_pantalla_fons(austronauta2,0,180)
+            if decision_astronauta2 == 3:
+                imprimir_pantalla_fons(austronauta3,0,180)
+            if decision_astronauta2 == 4:
+                imprimir_pantalla_fons(austronauta4,0,180)
+            if decision_astronauta2 == 5:
+                imprimir_pantalla_fons(austronauta5,0,180)
+            if decision_astronauta2 == 6:
+                imprimir_pantalla_fons(austronauta6,0,180)
+            if decision_astronauta2 == 7:
+                imprimir_pantalla_fons(austronauta7,0,180)
             if vidas1 >= 1:
-                imprimir_pantalla_fons(corazon, 0, 0)
-            if vidas1 >= 2:
-                imprimir_pantalla_fons(corazon, 10, 0)
-            if vidas1 >= 3:
                 imprimir_pantalla_fons(corazon, 20, 0)
+            if vidas1 >= 2:
+                imprimir_pantalla_fons(corazon, 30, 0)
+            if vidas1 >= 3:
+                imprimir_pantalla_fons(corazon, 40, 0)
             if vidas2 >= 1:
-                imprimir_pantalla_fons(corazon, 0, 190)
-            if vidas2 >= 2:
-                imprimir_pantalla_fons(corazon, 10, 190)
-            if vidas2 >= 3:
                 imprimir_pantalla_fons(corazon, 20, 190)
+            if vidas2 >= 2:
+                imprimir_pantalla_fons(corazon, 30, 190)
+            if vidas2 >= 3:
+                imprimir_pantalla_fons(corazon, 40, 190)
 
             if energiajugador1 >= 3:
                 imprimir_pantalla_fons(bateria, 250, 180)
@@ -418,9 +519,9 @@ while encendido:
                 try:
                     resultado_precision1 = int((precisio_jugador1 / bales_total_utilitzades_jugador1) * 100)
                 except:
-                    resultat_precisio_jugador1 = 0
+                    resultado_precision1 = 0
                 try:
-                    precision_jugador2 = int((precisio_jugador2 / bales_total_utilitzades_jugador2) * 100)
+                    resultado_precision2 = int((precisio_jugador2 / bales_total_utilitzades_jugador2) * 100)
                 except:
                     resultado_precision2 = 0
                 if current_time - temps_inici_partida >= temps_partida:
@@ -450,12 +551,13 @@ while encendido:
                             pygame.display.update()
                             time.sleep(1)
                             animacio = False
+                            wins2 += 1
                         imprimir_pantalla_fons(win1,0,0)
                         sonido_victoria.play()
                         TextPantalla(pantalla, None, 20, "Pulsa espacio para continuar", (255, 255, 255), (80, 130))
-                        TextPantalla(pantalla, None, 17, "Precisió jugador 1  " + str(precisio_jugador1) + "%",
+                        TextPantalla(pantalla, None, 17, "Precisió jugador 1  " + str(resultado_precision1) + "%",
                                      WHITE, (80, 170))
-                        TextPantalla(pantalla, None, 17, "Precisió jugador 2  " + str(precision_jugador2) + "%",
+                        TextPantalla(pantalla, None, 17, "Precisió jugador 2  " + str(resultado_precision2) + "%",
                                      WHITE, (80, 185))
                     if vidas2 == 0:
                         if animacio == True:
@@ -473,13 +575,14 @@ while encendido:
                             pygame.display.update()
                             time.sleep(1)
                             animacio = False
+                            wins1 += 1
                         imprimir_pantalla_fons(win2,0,0)
                         sonido_victoria.play()
                         TextPantalla(pantalla, None, 20, "Pulsa espacio para continuar.", (255, 255, 255), (80, 130))
-                        TextPantalla(pantalla, None, 17, "Precisió jugador 1  " + str(precisio_jugador1) + "%",
-                                     WHITE, (0, 170))
-                        TextPantalla(pantalla, None, 17, "Precisió jugador 2  " + str(precision_jugador2) + "%",
-                                     WHITE, (0, 185))
+                        TextPantalla(pantalla, None, 17, "Precisió jugador 1  " + str(resultado_precision1) + "%",
+                                     WHITE, (80, 170))
+                        TextPantalla(pantalla, None, 17, "Precisió jugador 2  " + str(resultado_precision2) + "%",
+                                     WHITE, (80, 185))
 
                     pygame.display.update()
 
@@ -505,5 +608,3 @@ while encendido:
             pantalla.blit(player_image2, player_rect2)
             pygame.display.update()
             clock.tick(fps)
-
-
