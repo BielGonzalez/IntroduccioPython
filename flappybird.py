@@ -23,26 +23,30 @@ def dibujar_obstaculos(obstaculos):
         else:
             pantalla.blit(imagen_obstaculos_arriba,obstaculo)
 def colisiones_tubos(obstaculos):
+    vivo = True
     for obstaculo in obstaculos:
-        if rect_jugador.colliderect(obstaculo):
+        if rect_jugador.colliderect(obstaculo) or rect_jugador.top <= 0 or rect_jugador.colliderect(suelo_rect):
             print("funciona papa ")
-        if rect_jugador.top <= 20 or rect_jugador.bottom >= 520:
-            print("funciona mama")
+            vivo = False
+    return vivo
 def girar_jugador(jugador):
     nuevo_jugador = pygame.transform.rotozoom(jugador,-movimiento_jugador*3 , 1)
     return nuevo_jugador
 def puntuacion_actualizada():
-    puntuacion_surface = fuente_juego.render('Score',True,(255,255,255))
+    puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
     puntuacion_rect = puntuacion_surface.get_rect(center = (400,100))
+    pantalla.blit(puntuacion_surface,puntuacion_rect)
 pygame.init()
 pantalla = pygame.display.set_mode((800,600))
 clock = pygame.time.Clock()
 fuente_juego = pygame.font.Font(None,40)
 caida = 0.20
 movimiento_jugador = 0
+vivo = True
 puntuacion = 0
 mejor_puntuacion = 0
 suelo_imagen = pygame.image.load("assets/prueba.jpg").convert()
+suelo_rect = suelo_imagen.get_rect(center = (800,0))
 FONDOJUEGO = pygame.image.load("assets/fondo1.png").convert()
 suelo_pos_x = 0
 imagen_jugador = pygame.image.load("assets/tortuga.png").convert_alpha()
@@ -60,29 +64,32 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
+            if event.key == pygame.K_SPACE and vivo:
                 movimiento_jugador = 0
                 movimiento_jugador -= 6
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and vivo:
             if (pygame.mouse.get_pressed()[0]):
                 movimiento_jugador = 0
                 movimiento_jugador -= 6
         if event.type == CREAROBSTACULO:
             lista_obstaculos.extend(crear_obstaculo())
     pantalla.blit(FONDOJUEGO,(0,0))
+    if vivo:
+        movimiento_jugador += caida
+        rect_jugador.centery += movimiento_jugador
 
-    movimiento_jugador += caida
-    rect_jugador.centery += movimiento_jugador
+        jugador_girado = girar_jugador(imagen_jugador)
+        pantalla.blit(jugador_girado,rect_jugador)
+        vivo = colisiones_tubos(lista_obstaculos)
 
-    jugador_girado = girar_jugador(imagen_jugador)
-    pantalla.blit(jugador_girado,rect_jugador)
-    lista_obstaculos = mover_obstaculos(lista_obstaculos)
-    dibujar_obstaculos(lista_obstaculos)
-
-    suelo_pos_x -= 5
-    dibujar_suelo()
-    colisiones_tubos(lista_obstaculos)
-    if suelo_pos_x <= -800:
-        suelo_pos_x = 0
-    pygame.display.update()
-    clock.tick(60)
+        lista_obstaculos = mover_obstaculos(lista_obstaculos)
+        dibujar_obstaculos(lista_obstaculos)
+        puntuacion += 1
+        puntuacion_actualizada()
+        suelo_pos_x -= 5
+        dibujar_suelo()
+        vivo = colisiones_tubos(lista_obstaculos)
+        if suelo_pos_x <= -800:
+            suelo_pos_x = 0
+        pygame.display.update()
+        clock.tick(60)
