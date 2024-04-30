@@ -25,22 +25,43 @@ def dibujar_obstaculos(obstaculos):
 def colisiones_tubos(obstaculos):
     vivo = True
     for obstaculo in obstaculos:
-        if rect_jugador.colliderect(obstaculo) or rect_jugador.top <= 0 or rect_jugador.colliderect(suelo_rect):
+        if rect_jugador.colliderect(obstaculo):
             print("funciona papa ")
+            puntuacion_actualizada("off")
             vivo = False
+    if rect_jugador.bottom >= 550:
+        print("a")
+        vivo = False
+    if rect_jugador.top <= - 10:
+        print("b")
+        vivo = False
     return vivo
 def girar_jugador(jugador):
     nuevo_jugador = pygame.transform.rotozoom(jugador,-movimiento_jugador*3 , 1)
     return nuevo_jugador
-def puntuacion_actualizada():
-    puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
-    puntuacion_rect = puntuacion_surface.get_rect(center = (400,100))
-    pantalla.blit(puntuacion_surface,puntuacion_rect)
+def puntuacion_actualizada(estado_juego):
+    if estado_juego == "on":
+        puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
+        puntuacion_rect = puntuacion_surface.get_rect(center = (400,100))
+        pantalla.blit(puntuacion_surface,puntuacion_rect)
+    if estado_juego == "off" and numero == 0:
+        mejor_puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
+        mejor_puntuacion_rect = mejor_puntuacion_surface.get_rect(center = (400,400))
+        pantalla.blit(mejor_puntuacion_surface,mejor_puntuacion_rect)
+    if estado_juego == "off" and numero >= 1:
+        mejor_puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
+        mejor_puntuacion_rect = mejor_puntuacion_surface.get_rect(center = (400,400))
+        pantalla.blit(mejor_puntuacion_surface,mejor_puntuacion_rect)
+def actualizar_mejor_puntuacion(puntuacion,mejor_puntuacion):
+        if puntuacion < mejor_puntuacion:
+            mejor_puntuacion = puntuacion
+        return mejor_puntuacion
 pygame.init()
 pantalla = pygame.display.set_mode((800,600))
 clock = pygame.time.Clock()
 fuente_juego = pygame.font.Font(None,40)
 caida = 0.20
+numero = 0
 movimiento_jugador = 0
 vivo = True
 puntuacion = 0
@@ -67,6 +88,15 @@ while True:
             if event.key == pygame.K_SPACE and vivo:
                 movimiento_jugador = 0
                 movimiento_jugador -= 6
+            if event.key == pygame.K_SPACE and vivo == False:
+                numero += 1
+                vivo = True
+                movimiento_jugador = 0
+                mejor_puntuacion = puntuacion
+                puntuacion = 0
+                lista_obstaculos.clear()
+                rect_jugador.center = (300,200)
+
         if event.type == pygame.MOUSEBUTTONDOWN and vivo:
             if (pygame.mouse.get_pressed()[0]):
                 movimiento_jugador = 0
@@ -75,6 +105,8 @@ while True:
             lista_obstaculos.extend(crear_obstaculo())
     pantalla.blit(FONDOJUEGO,(0,0))
     if vivo:
+
+        print(numero)
         movimiento_jugador += caida
         rect_jugador.centery += movimiento_jugador
 
@@ -85,10 +117,11 @@ while True:
         lista_obstaculos = mover_obstaculos(lista_obstaculos)
         dibujar_obstaculos(lista_obstaculos)
         puntuacion += 1
-        puntuacion_actualizada()
+        puntuacion_actualizada("on")
         suelo_pos_x -= 5
         dibujar_suelo()
         vivo = colisiones_tubos(lista_obstaculos)
+        actualizar_mejor_puntuacion(puntuacion,mejor_puntuacion)
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
         pygame.display.update()
