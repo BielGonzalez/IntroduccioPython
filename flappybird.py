@@ -26,14 +26,13 @@ def colisiones_tubos(obstaculos):
     vivo = True
     for obstaculo in obstaculos:
         if rect_jugador.colliderect(obstaculo):
-            print("funciona papa ")
-            puntuacion_actualizada("off")
             vivo = False
+            puntuacion_actualizada('off')
     if rect_jugador.bottom >= 550:
-        print("a")
+        puntuacion_actualizada('off')
         vivo = False
     if rect_jugador.top <= - 10:
-        print("b")
+        puntuacion_actualizada('off')
         vivo = False
     return vivo
 def girar_jugador(jugador):
@@ -41,32 +40,42 @@ def girar_jugador(jugador):
     return nuevo_jugador
 def puntuacion_actualizada(estado_juego):
     if estado_juego == "on":
-        puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
+        puntuacion_surface = fuente_juego.render(str(int(puntuacion)),True,(255,255,255))
         puntuacion_rect = puntuacion_surface.get_rect(center = (400,100))
         pantalla.blit(puntuacion_surface,puntuacion_rect)
-    if estado_juego == "off" and numero == 0:
-        mejor_puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
-        mejor_puntuacion_rect = mejor_puntuacion_surface.get_rect(center = (400,400))
+    if estado_juego == "off":
+        puntuacion_surface = fuente_juego.render(str(int(puntuacion)), True, (255, 255, 255))
+        puntuacion_rect = puntuacion_surface.get_rect(center=(400, 100))
+        pantalla.blit(puntuacion_surface, puntuacion_rect)
+        game_over = fuente_juego.render("GAME OVER", True, (74, 200, 10))
+        puntuacion_texto = fuente_juego_peque.render("PUNTUACION", True, (74, 200, 10))
+        game_over_rect = game_over.get_rect(center=(400, 150))
+        puntuacion_texto_rect = puntuacion_texto.get_rect(center=(470, 250))
+        mejor_puntuacion_surface = fuente_juego.render(str(int(mejor_puntuacion)),True,(255,255,255))
+        mejor_puntuacion_rect = mejor_puntuacion_surface.get_rect(center = (400,470))
+        pantalla.blit(pruebagameover, (230, 200))
         pantalla.blit(mejor_puntuacion_surface,mejor_puntuacion_rect)
-    if estado_juego == "off" and numero >= 1:
-        mejor_puntuacion_surface = fuente_juego.render(str(puntuacion),True,(255,255,255))
-        mejor_puntuacion_rect = mejor_puntuacion_surface.get_rect(center = (400,400))
-        pantalla.blit(mejor_puntuacion_surface,mejor_puntuacion_rect)
+        pantalla.blit(game_over, game_over_rect)
+        pantalla.blit(puntuacion_texto, puntuacion_texto_rect)
+
 def actualizar_mejor_puntuacion(puntuacion,mejor_puntuacion):
-        if puntuacion < mejor_puntuacion:
+        if puntuacion > mejor_puntuacion:
             mejor_puntuacion = puntuacion
         return mejor_puntuacion
 pygame.init()
 pantalla = pygame.display.set_mode((800,600))
 clock = pygame.time.Clock()
-fuente_juego = pygame.font.Font(None,40)
+fuente_juego = pygame.font.Font('04B_19.TTF',35)
+fuente_juego_peque = pygame.font.Font('04B_19.TTF',20)
 caida = 0.20
 numero = 0
+GAMEOVER ="GAME OVER"
 movimiento_jugador = 0
 vivo = True
 puntuacion = 0
 mejor_puntuacion = 0
-suelo_imagen = pygame.image.load("assets/prueba.jpg").convert()
+pruebagameover = pygame.image.load("assets/pruebagameover.png")
+suelo_imagen = pygame.image.load("assets/prueba.png").convert()
 suelo_rect = suelo_imagen.get_rect(center = (800,0))
 FONDOJUEGO = pygame.image.load("assets/fondo1.png").convert()
 suelo_pos_x = 0
@@ -92,7 +101,6 @@ while True:
                 numero += 1
                 vivo = True
                 movimiento_jugador = 0
-                mejor_puntuacion = puntuacion
                 puntuacion = 0
                 lista_obstaculos.clear()
                 rect_jugador.center = (300,200)
@@ -104,9 +112,9 @@ while True:
         if event.type == CREAROBSTACULO:
             lista_obstaculos.extend(crear_obstaculo())
     pantalla.blit(FONDOJUEGO,(0,0))
-    if vivo:
 
-        print(numero)
+    if vivo:
+        print(mejor_puntuacion)
         movimiento_jugador += caida
         rect_jugador.centery += movimiento_jugador
 
@@ -116,12 +124,14 @@ while True:
 
         lista_obstaculos = mover_obstaculos(lista_obstaculos)
         dibujar_obstaculos(lista_obstaculos)
-        puntuacion += 1
+        puntuacion += 0.007
         puntuacion_actualizada("on")
         suelo_pos_x -= 5
         dibujar_suelo()
         vivo = colisiones_tubos(lista_obstaculos)
-        actualizar_mejor_puntuacion(puntuacion,mejor_puntuacion)
+        if puntuacion > mejor_puntuacion:
+            mejor_puntuacion = puntuacion
+
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
         pygame.display.update()
