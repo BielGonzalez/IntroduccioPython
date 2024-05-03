@@ -6,18 +6,15 @@ import random
 def dibujar_suelo():
     pantalla.blit(suelo_imagen,(suelo_pos_x,550))
     pantalla.blit(suelo_imagen, (suelo_pos_x + 800,550))
-def prueba_moneda():
-    coin1 = imagen_moneda.get_rect(center = (1000,posicion_moneda))
-    pantalla.blit(imagen_moneda,(pos_x,400))
-    return coin1
+
+
 def crear_obstaculo():
-    global posicion_obstaculo
     posicion_obstaculo = random.choice(opciones_altura_obstaculos)
+    pos_prueba = posicion_obstaculo
     espacio_obstaculos = random.choice(opciones_espacio_obstaculos)
     obstaculo_abajo = imagen_obstaculos_abajo.get_rect(midtop = (1000,posicion_obstaculo))
     obstaculo_arriba = imagen_obstaculos_arriba.get_rect(midbottom =(1000, posicion_obstaculo - espacio_obstaculos))
-    return obstaculo_abajo, obstaculo_arriba
-
+    return obstaculo_abajo, obstaculo_arriba, pos_prueba
 def mover_obstaculos(obstaculos):
     for obstaculo in obstaculos:
         obstaculo.centerx -= 5
@@ -28,33 +25,6 @@ def dibujar_obstaculos(obstaculos):
             pantalla.blit(imagen_obstaculos_abajo,obstaculo)
         else:
             pantalla.blit(imagen_obstaculos_arriba,obstaculo)
-def decidir_altura_mondeas(posicion_obstaculo):
-    global posicion_moneda
-    if posicion_obstaculo == 500:
-        posicion_moneda = 600
-    elif posicion_obstaculo == 400:
-        posicion_moneda = 500
-    elif posicion_obstaculo == 300:
-        posicion_moneda = 400
-    elif posicion_obstaculo == 200:
-        posicion_moneda = 300
-def crear_moneda(posicion_moneda):
-    coin1 = imagen_moneda.get_rect(center = (1000,posicion_moneda))
-    return coin1
-def dibujar_moneda(coins_f):
-    for coin_f in coins_f:
-        coin1 = coin_f
-        if vivo:
-            pantalla.blit(imagen_moneda,coin1)
-def mover_monedas(coins):
-    for coin in coins:
-        coin.centerx -= 5
-    return coins
-def colision_moneda(coin1):
-    for coin in coins:
-    if rect_jugador.colliderect(coin1):
-        vivo = False
-    return vivo
 def colisiones_tubos(obstaculos):
     vivo = True
     for obstaculo in obstaculos:
@@ -68,6 +38,36 @@ def colisiones_tubos(obstaculos):
         puntuacion_actualizada('off')
         vivo = False
     return vivo
+def decidir_altura_monedas(posicion_obstaculo, coins):
+    global posicion_moneda
+    posicion_moneda = 0
+    if posicion_obstaculo == 500:
+        for posicion_moneda in coins:
+            posicion_moneda = 600
+    elif posicion_obstaculo == 400:
+        for posicion_moneda in coins:
+            posicion_moneda = 500
+    elif posicion_obstaculo == 500:
+        for posicion_moneda in coins:
+            posicion_moneda = 400
+    elif posicion_obstaculo == 400:
+        for posicion_moneda in coins:
+            posicion_moneda = 300
+    return posicion_moneda
+def crear_moneda(obstaculo_abajo,coins):
+    decidir_altura_monedas(obstaculo_abajo,coins)
+    coin1 = imagen_moneda.get_rect(center = (1000,obstaculo_abajo-75))
+    coin2 = imagen_moneda.get_rect(center =(1000,obstaculo_abajo-75))
+    return coin1,coin2
+def mover_moneda(coins_f):
+    for coin_f in coins_f:
+        coin_f.x -= 5
+    return coins_f
+def dibujar_moneda(coins_f):
+    for coin_f in coins_f:
+        coin1 = coin_f
+        if vivo:
+            pantalla.blit(imagen_moneda,(coin1.x ,coin1.y))
 def girar_jugador(jugador):
     nuevo_jugador = pygame.transform.rotozoom(jugador,-movimiento_jugador*3 , 1)
     return nuevo_jugador
@@ -116,6 +116,7 @@ def puntuacion_actualizada(estado_juego):
         pantalla.blit(puntuacion_surface, puntuacion_rect)
         pantalla.blit(puntuacion_texto, puntuacion_texto_rect)
 
+
 def actualizar_mejor_puntuacion(puntuacion,mejor_puntuacion):
         if puntuacion > mejor_puntuacion:
             mejor_puntuacion = puntuacion
@@ -126,7 +127,6 @@ clock = pygame.time.Clock()
 fuente_juego = pygame.font.Font('04B_19.TTF',35)
 fuente_juego_peque = pygame.font.Font('04B_19.TTF',20)
 caida = 0.20
-posicion_moneda =100
 numero = 0
 imagen_moneda = pygame.image.load("assets/moneda.png")
 monedas = 0
@@ -134,6 +134,7 @@ monedas_totales = 0
 GAMEOVER ="GAME OVER"
 movimiento_jugador = 0
 vivo = True
+posicion_moneda = 0
 posicion_obstaculo = 0
 puntuacion = 0
 mejor_puntuacion = 0
@@ -142,7 +143,6 @@ suelo_imagen = pygame.image.load("assets/prueba.png").convert()
 suelo_rect = suelo_imagen.get_rect(center = (800,0))
 FONDOJUEGO = pygame.image.load("assets/fondo1.png").convert()
 suelo_pos_x = 0
-pos_x = 600
 imagen_jugador = pygame.image.load("assets/tortuga.png").convert_alpha()
 rect_jugador = imagen_jugador.get_rect(center = (400,300))
 imagen_obstaculos_abajo = pygame.image.load("assets/troncoabajo.png").convert_alpha()
@@ -151,10 +151,9 @@ lista_obstaculos = []
 coins = []
 CREAROBSTACULO = pygame.USEREVENT
 CREARMONEDA = pygame.USEREVENT
-pygame.time.set_timer(CREARMONEDA,1500)
+pygame.time.set_timer(CREARMONEDA,0)
 pygame.time.set_timer(CREAROBSTACULO,1500)
 opciones_altura_obstaculos = [500,400,300,200]
-opciones_altura_monedas = [575,475,375,275]
 opciones_espacio_obstaculos = [150,200,175]
 while True:
     for event in pygame.event.get():
@@ -173,40 +172,44 @@ while True:
                 lista_obstaculos.clear()
                 rect_jugador.center = (300,200)
                 monedas = 0
+                coins.clear()
 
         if event.type == pygame.MOUSEBUTTONDOWN and vivo:
             if (pygame.mouse.get_pressed()[0]):
                 movimiento_jugador = 0
                 movimiento_jugador -= 6
-        if event.type == CREARMONEDA:
-            decidir_altura_mondeas(posicion_obstaculo)
-            coins.extend(crear_moneda(posicion_moneda))
+
         if event.type == CREAROBSTACULO:
-            lista_obstaculos.extend(crear_obstaculo())
+            a, b, c = crear_obstaculo()
+            prueba2 = a,b
+            print(rect_jugador)
+            lista_obstaculos.extend(prueba2)
+            coins.extend(crear_moneda(c, coins))
+
     pantalla.blit(FONDOJUEGO,(0,0))
 
     if vivo:
         movimiento_jugador += caida
         rect_jugador.centery += movimiento_jugador
-        print(colision_moneda(coins))
+
         jugador_girado = girar_jugador(imagen_jugador)
         pantalla.blit(jugador_girado,rect_jugador)
         vivo = colisiones_tubos(lista_obstaculos)
         lista_obstaculos = mover_obstaculos(lista_obstaculos)
         dibujar_obstaculos(lista_obstaculos)
+
+        coins = mover_moneda(coins)
+        dibujar_moneda(coins)
         puntuacion += 0.007
         monedas += 0.02
         monedas_totales += 0.02
-        puntuacion_actualizada('on')
+        puntuacion_actualizada("on")
         suelo_pos_x -= 5
         dibujar_suelo()
-        pos_x -= 5
-        prueba_moneda()
         vivo = colisiones_tubos(lista_obstaculos)
         if puntuacion > mejor_puntuacion:
             mejor_puntuacion = puntuacion
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
-
         pygame.display.update()
         clock.tick(60)
