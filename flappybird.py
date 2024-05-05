@@ -57,7 +57,7 @@ def decidir_altura_monedas(posicion_obstaculo, coins):
 def crear_moneda(obstaculo_abajo,coins):
     decidir_altura_monedas(obstaculo_abajo,coins)
     coin1 = imagen_moneda.get_rect(center = (1000,obstaculo_abajo-75))
-    coin2 = imagen_moneda.get_rect(center =(1000,obstaculo_abajo-75))
+    coin2 = imagen_moneda.get_rect(center =(1000,obstaculo_abajo-7555))
     return coin1,coin2
 def mover_moneda(coins_f):
     for coin_f in coins_f:
@@ -68,6 +68,15 @@ def dibujar_moneda(coins_f):
         coin1 = coin_f
         if vivo:
             pantalla.blit(imagen_moneda,(coin1.x ,coin1.y))
+def recoger_monedas(coins):
+    recogida = 0
+    w = False
+    for coin in coins:
+        if rect_jugador.colliderect(coin):
+            recogida += 1
+            w = True
+            coins.remove(coin)
+    return recogida, w
 def girar_jugador(jugador):
     nuevo_jugador = pygame.transform.rotozoom(jugador,-movimiento_jugador*3 , 1)
     return nuevo_jugador
@@ -128,6 +137,7 @@ fuente_juego = pygame.font.Font('04B_19.TTF',35)
 fuente_juego_peque = pygame.font.Font('04B_19.TTF',20)
 caida = 0.20
 numero = 0
+recogida = False
 imagen_moneda = pygame.image.load("assets/moneda.png")
 monedas = 0
 monedas_totales = 0
@@ -151,10 +161,12 @@ lista_obstaculos = []
 coins = []
 CREAROBSTACULO = pygame.USEREVENT
 CREARMONEDA = pygame.USEREVENT
+COMPROBARMONEDAS = pygame.USEREVENT
+pygame.time.set_timer(COMPROBARMONEDAS,0)
 pygame.time.set_timer(CREARMONEDA,0)
 pygame.time.set_timer(CREAROBSTACULO,1500)
 opciones_altura_obstaculos = [500,400,300,200]
-opciones_espacio_obstaculos = [150,200,175]
+opciones_espacio_obstaculos = [150,160]
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -163,6 +175,7 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE and vivo:
                 movimiento_jugador = 0
+                monedas_totales = monedas
                 movimiento_jugador -= 6
             if event.key == pygame.K_SPACE and vivo == False:
                 numero += 1
@@ -173,16 +186,13 @@ while True:
                 rect_jugador.center = (300,200)
                 monedas = 0
                 coins.clear()
-
         if event.type == pygame.MOUSEBUTTONDOWN and vivo:
             if (pygame.mouse.get_pressed()[0]):
                 movimiento_jugador = 0
                 movimiento_jugador -= 6
-
         if event.type == CREAROBSTACULO:
             a, b, c = crear_obstaculo()
             prueba2 = a,b
-            print(rect_jugador)
             lista_obstaculos.extend(prueba2)
             coins.extend(crear_moneda(c, coins))
 
@@ -197,12 +207,15 @@ while True:
         vivo = colisiones_tubos(lista_obstaculos)
         lista_obstaculos = mover_obstaculos(lista_obstaculos)
         dibujar_obstaculos(lista_obstaculos)
-
         coins = mover_moneda(coins)
         dibujar_moneda(coins)
-        puntuacion += 0.007
-        monedas += 0.02
-        monedas_totales += 0.02
+        recogida = recoger_monedas(coins)
+        q,w = recogida
+        monedas += q
+        recogida = 0
+        if w:
+            monedas_totales += 1
+            puntuacion += 1
         puntuacion_actualizada("on")
         suelo_pos_x -= 5
         dibujar_suelo()
