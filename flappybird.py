@@ -6,8 +6,6 @@ import random
 def dibujar_suelo():
     pantalla.blit(suelo_imagen,(suelo_pos_x,550))
     pantalla.blit(suelo_imagen, (suelo_pos_x + 800,550))
-
-
 def crear_obstaculo():
     posicion_obstaculo = random.choice(opciones_altura_obstaculos)
     pos_prueba = posicion_obstaculo
@@ -30,12 +28,12 @@ def colisiones_tubos(obstaculos):
     for obstaculo in obstaculos:
         if rect_jugador.colliderect(obstaculo):
             vivo = 2
-            puntuacion_actualizada('off',rect_jugador,vivo,menu,estado)
+            puntuacion_actualizada('off',rect_jugador,vivo)
     if rect_jugador.bottom >= 550:
-        puntuacion_actualizada('off',rect_jugador,vivo,menu,estado)
+        puntuacion_actualizada('off',rect_jugador,vivo)
         vivo = 2
     if rect_jugador.top <= - 10:
-        puntuacion_actualizada('off',rect_jugador,vivo,menu,estado)
+        puntuacion_actualizada('off',rect_jugador,vivo)
         vivo = 2
     return vivo
 def decidir_altura_monedas(posicion_obstaculo, coins):
@@ -80,7 +78,7 @@ def recoger_monedas(coins):
 def girar_jugador(jugador):
     nuevo_jugador = pygame.transform.rotozoom(jugador,-movimiento_jugador*3 , 1)
     return nuevo_jugador
-def puntuacion_actualizada(estado_juego,rect_jugador,vivo,menu,estado):
+def puntuacion_actualizada(estado_juego,rect_jugador,vivo,):
     if estado_juego == "on":
         puntuacion_surface = fuente_juego.render(str(int(puntuacion)),True,(255,255,255))
         puntuacion_rect = puntuacion_surface.get_rect(center = (400,100))
@@ -129,10 +127,8 @@ def puntuacion_actualizada(estado_juego,rect_jugador,vivo,menu,estado):
         pantalla.blit(reiniciar_img, reiniciar_rect)
         pantalla.blit(atras_img, atras_rect)
         pantalla.blit(exit_img, exit_rect)
-
-        pygame.display.update()
-
-        return vivo,menu, rect_jugador,estado
+        pantalla.blit(play_img, play_rect)
+        return vivo
 def actualizar_mejor_puntuacion(puntuacion,mejor_puntuacion):
         if puntuacion > mejor_puntuacion:
             mejor_puntuacion = puntuacion
@@ -207,6 +203,8 @@ empezar_img = pygame.image.load("assets/empezar.png").convert()
 empezar_rect = empezar_img.get_rect(center=(200,400))
 salir_img = pygame.image.load("assets/salir.png").convert()
 salir_rect = salir_img.get_rect(center=(400,400))
+empezar_rect2 = empezar_img.get_rect(center=(20000,40000))
+salir_rect2 = salir_img.get_rect(center=(40000,40000))
 pausa_img = pygame.image.load("assets/pausa.png").convert()
 pausa_rect = pausa_img.get_rect(center=(50,50))
 reiniciar_img = pygame.image.load("assets/reiniciar.png").convert()
@@ -237,6 +235,8 @@ seccio_transparent = pygame.Surface((800,600),pygame.SRCALPHA)
 pos_reiniciar = reiniciar_rect
 pos_atras = atras_rect
 pos_exit = exit_rect
+pos_play = play_rect
+
 pygame.draw.rect(seccio_transparent,NEGRE_TRANSPARENT,(0,0,800,600))
 while True:
     for event in pygame.event.get():
@@ -278,7 +278,9 @@ while True:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if pos_reiniciar.collidepoint(event.pos) and vivo == 2:
+                pos_salir = salir_rect
+                pos_empezar = empezar_rect
+                if pos_reiniciar.collidepoint(event.pos) and vivo == 2 :
                     estado = False
                     numero += 1
                     movimiento_jugador = 0
@@ -287,12 +289,19 @@ while True:
                     rect_jugador.center = (300, 200)
                     monedas = 0
                     coins.clear()
-                    movimiento_jugador = 0
                     vivo = 1
                     pygame.display.update()
+                if pos_pausa.collidepoint(event.pos) and vivo == 1:
+                    estado = True
+                    pygame.time.set_timer(CREAROBSTACULO, 1500)
+                    estado = False
                 if pos_atras.collidepoint(event.pos) and vivo == 2:
                     estado = False
+                    puntuacion = 0
                     vivo = 2
+                    lista_obstaculos.clear()
+                    coins.clear()
+                    monedas = 0
                     menu = True
                     rect_jugador = imagen_jugador.get_rect(center=(400, 300))
                     pygame.display.update()
@@ -320,6 +329,9 @@ while True:
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
     if vivo == 1:
+        pos_salir = salir_rect2
+        pos_empezar = empezar_rect2
+        pantalla.blit(pausa_img, pausa_rect)
         movimiento_jugador += caida
         rect_jugador.centery += movimiento_jugador
         jugador_girado = girar_jugador(imagen_jugador)
@@ -337,26 +349,32 @@ while True:
         if w:
             monedas_totales += 1
             puntuacion += 1
-        puntuacion_actualizada("on",rect_jugador,vivo,menu,estado)
+        puntuacion_actualizada("on",rect_jugador,vivo)
         suelo_pos_x -= 5
         dibujar_suelo()
         vivo = colisiones_tubos(lista_obstaculos)
-        pantalla.blit(pausa_img, pausa_rect)
+
         if puntuacion > mejor_puntuacion:
             mejor_puntuacion = puntuacion
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
         if estado == True:
             dibujar_suelo()
-            pantalla.blit(play_img, play_rect)
+            lista_obstaculos = mover_obstaculos(lista_obstaculos)
+            dibujar_obstaculos(lista_obstaculos)
+            coins = mover_moneda(coins)
+            dibujar_moneda(coins)
             menu_pausa(lista_obstaculos,coins)
             pantalla.blit(reiniciar_img, reiniciar_rect)
             pantalla.blit(atras_img, atras_rect)
+            pantalla.blit(play_img, play_rect)
             pantalla.blit(exit_img, exit_rect)
             while estado == True:
                 pos_reiniciar = reiniciar_rect
                 pos_atras = atras_rect
                 pos_exit = exit_rect
+                pos_pausa = pausa_rect
+                pos_play = play_rect
                 pygame.display.update()
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -375,15 +393,21 @@ while True:
                             rect_jugador.center = (300, 200)
                             monedas = 0
                             coins.clear()
-                            movimiento_jugador = 0
                             vivo = 1
                             pygame.display.update()
                         if pos_atras.collidepoint(event.pos) and estado == True:
                             estado = False
+                            puntuacion = 0
                             vivo = 2
+                            lista_obstaculos.clear()
+                            coins.clear()
+                            monedas = 0
                             menu = True
                             rect_jugador = imagen_jugador.get_rect(center=(400, 300))
                             pygame.display.update()
+                        if pos_play.collidepoint(event.pos) and estado == True:
+                            pygame.time.set_timer(CREAROBSTACULO, 1500)
+                            estado = False
                         if pos_exit.collidepoint(event.pos) and estado == True:
                             pygame.quit()
                             sys.exit()
