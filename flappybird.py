@@ -3,7 +3,7 @@ import time
 from pygame.locals import *
 import pygame
 import random
-def dibujar_suelo():
+def dibujar_suelo(suelo_pos_x):
     pantalla.blit(suelo_imagen,(suelo_pos_x,550))
     pantalla.blit(suelo_imagen, (suelo_pos_x + 800,550))
 def crear_obstaculo():
@@ -199,6 +199,8 @@ suelo_rect = suelo_imagen.get_rect(center = (800,0))
 FONDOJUEGO = pygame.image.load("assets/fondo1.png").convert()
 suelo_pos_x = 0
 
+tienda_img = pygame.image.load("assets/empezar.png").convert()
+tienda_rect = tienda_img.get_rect(center=(600,400))
 empezar_img = pygame.image.load("assets/empezar.png").convert()
 empezar_rect = empezar_img.get_rect(center=(200,400))
 salir_img = pygame.image.load("assets/salir.png").convert()
@@ -215,6 +217,7 @@ exit_img = pygame.image.load("assets/exit.png").convert()
 exit_rect = exit_img.get_rect(center=(475,500))
 play_img = pygame.image.load("assets/play.png").convert()
 play_rect = play_img.get_rect(center=(50,50))
+imagen_jugador2 = pygame.image.load("assets/tortuga.png").convert_alpha()
 imagen_jugador = pygame.image.load("assets/tortuga.png").convert_alpha()
 rect_jugador = imagen_jugador.get_rect(center = (400,300))
 imagen_obstaculos_abajo = pygame.image.load("assets/troncoabajo.png").convert_alpha()
@@ -222,6 +225,7 @@ imagen_obstaculos_arriba = pygame.image.load("assets/troncoarriba.png").convert_
 lista_obstaculos = []
 coins = []
 menu = True
+tienda = False
 CREAROBSTACULO = pygame.USEREVENT
 CREARMONEDA = pygame.USEREVENT
 pygame.time.set_timer(CREARMONEDA,0)
@@ -236,7 +240,8 @@ pos_reiniciar = reiniciar_rect
 pos_atras = atras_rect
 pos_exit = exit_rect
 pos_play = play_rect
-
+eleccion = 0
+event = pygame.event.wait()
 pygame.draw.rect(seccio_transparent,NEGRE_TRANSPARENT,(0,0,800,600))
 while True:
     for event in pygame.event.get():
@@ -261,6 +266,21 @@ while True:
                 movimiento_jugador = 0
             if event.key == pygame.K_ESCAPE and vivo == 1 and estado == False:
                 estado = True
+            if event.key == pygame.K_LEFT:
+                if eleccion < 0:
+                    eleccion -= 1
+                if eleccion == 0:
+                    imagen_jugador = imagen_jugador2
+                if eleccion == 1:
+                    imagen_jugador = imagen_moneda
+            if event.key == pygame.K_RIGHT:
+                if eleccion > 1:
+                    eleccion += 1
+                if eleccion == 0:
+                    imagen_jugador = imagen_jugador2
+                if eleccion == 1:
+                    imagen_jugador = imagen_moneda
+                pygame.display.flip()
         if event.type == pygame.MOUSEBUTTONDOWN and vivo == 1:
             if (pygame.mouse.get_pressed()[0]):
                 movimiento_jugador = 0
@@ -277,6 +297,10 @@ while True:
             if pos_salir.collidepoint(event.pos):
                 pygame.quit()
                 sys.exit()
+            if pos_tienda.collidepoint(event.pos) and menu:
+                tienda = True
+                menu = False
+                vivo = 4
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos_salir = salir_rect
                 pos_empezar = empezar_rect
@@ -290,41 +314,55 @@ while True:
                     monedas = 0
                     coins.clear()
                     vivo = 1
-                    pygame.display.update()
+                    pygame.display.flip()
                 if pos_pausa.collidepoint(event.pos) and vivo == 1:
                     estado = True
                     pygame.time.set_timer(CREAROBSTACULO, 1500)
-                    estado = False
                 if pos_atras.collidepoint(event.pos) and vivo == 2:
                     estado = False
                     puntuacion = 0
+                    pygame.time.set_timer(CREAROBSTACULO, 1500)
                     vivo = 2
                     lista_obstaculos.clear()
                     coins.clear()
                     monedas = 0
                     menu = True
                     rect_jugador = imagen_jugador.get_rect(center=(400, 300))
-                    pygame.display.update()
+                    pygame.display.flip()
                 if pos_exit.collidepoint(event.pos) and vivo == 2:
                     pygame.quit()
                     sys.exit()
 
     pantalla.blit(FONDOJUEGO,(0,0))
+    if tienda:
+        keys = pygame.key.get_pressed()
+        pantalla.blit(FONDOJUEGO,(0,0))
+        jugador_girado = girar_jugador(imagen_jugador)
+        pantalla.blit(jugador_girado, rect_jugador)
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    tienda =False
+                    menu = True
+        pygame.display.flip()
     if menu:
+        lista_obstaculos.clear()
+        coins.clear()
         pos_empezar = empezar_rect
         pos_salir = salir_rect
         pos_pausa = pausa_rect
-
+        pos_tienda = tienda_rect
         movimiento_jugador = 0
         rect_jugador.centery += movimiento_jugador
         jugador_girado = girar_jugador(imagen_jugador)
         pantalla.blit(jugador_girado,rect_jugador)
         suelo_pos_x -= 5
-        dibujar_suelo()
+        dibujar_suelo(suelo_pos_x)
         pantalla.blit(empezar_img,empezar_rect)
         pantalla.blit(salir_img,salir_rect)
+        pantalla.blit(tienda_img,tienda_rect)
 
-        pygame.display.update()
+        pygame.display.flip()
         clock.tick(60)
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
@@ -345,13 +383,12 @@ while True:
         q,w = recogida
         monedas += q
         recogida = 0
-
         if w:
             monedas_totales += 1
             puntuacion += 1
         puntuacion_actualizada("on",rect_jugador,vivo)
         suelo_pos_x -= 5
-        dibujar_suelo()
+        dibujar_suelo(suelo_pos_x)
         vivo = colisiones_tubos(lista_obstaculos)
 
         if puntuacion > mejor_puntuacion:
@@ -359,7 +396,9 @@ while True:
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
         if estado == True:
-            dibujar_suelo()
+            if suelo_pos_x <= -800:
+                suelo_pos_x = 0
+            dibujar_suelo(suelo_pos_x)
             lista_obstaculos = mover_obstaculos(lista_obstaculos)
             dibujar_obstaculos(lista_obstaculos)
             coins = mover_moneda(coins)
@@ -375,7 +414,7 @@ while True:
                 pos_exit = exit_rect
                 pos_pausa = pausa_rect
                 pos_play = play_rect
-                pygame.display.update()
+                pygame.display.flip()
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -394,9 +433,10 @@ while True:
                             monedas = 0
                             coins.clear()
                             vivo = 1
-                            pygame.display.update()
+                            pygame.display.flip()
                         if pos_atras.collidepoint(event.pos) and estado == True:
                             estado = False
+                            pygame.time.set_timer(CREAROBSTACULO, 1500)
                             puntuacion = 0
                             vivo = 2
                             lista_obstaculos.clear()
@@ -404,13 +444,14 @@ while True:
                             monedas = 0
                             menu = True
                             rect_jugador = imagen_jugador.get_rect(center=(400, 300))
-                            pygame.display.update()
+                            pygame.display.flip()
                         if pos_play.collidepoint(event.pos) and estado == True:
                             pygame.time.set_timer(CREAROBSTACULO, 1500)
                             estado = False
+                            movimiento_jugador = 0
                         if pos_exit.collidepoint(event.pos) and estado == True:
                             pygame.quit()
                             sys.exit()
-                pygame.display.update()
+
         pygame.display.update()
         clock.tick(60)
