@@ -71,6 +71,7 @@ def decidir_altura_monedas(posicion_obstaculod, coinsd):
 def crear_moneda(obstaculo_abajo, coinsd):
     decidir_altura_monedas(obstaculo_abajo, coinsd)
     coin1 = imagen_moneda.get_rect(center=(1000, obstaculo_abajo - 75))
+    coin1 = pygame.Rect(coin1.centerx-40, coin1.centery-35, 75, 75)
     coin2 = imagen_moneda.get_rect(center=(1000, obstaculo_abajo - 7555))
     return coin1, coin2
 
@@ -242,10 +243,13 @@ FONDOJUEGO = pygame.image.load("assets/fondo1.png").convert()
 suelo_pos_x = 0
 tienda_img = pygame.image.load("assets/empezar.png").convert()
 tienda_rect = tienda_img.get_rect(center=(600, 400))
+comprar_imgo = pygame.image.load("assets/empezar.png").convert()
 comprar_img = pygame.image.load("assets/empezar.png").convert()
-comprar_rect = comprar_img.get_rect(center=(600, 400))
+comprar_rect = comprar_img.get_rect(center=(490, 400))
+yacomprado_img = pygame.image.load("assets/salir.png").convert()
+yacomprado_rect = yacomprado_img.get_rect(center=(490, 400))
 seleccionar_img = pygame.image.load("assets/empezar.png").convert()
-seleccionar_rect = seleccionar_img.get_rect(center=(200, 400))
+seleccionar_rect = seleccionar_img.get_rect(center=(310, 400))
 empezar_img = pygame.image.load("assets/empezar.png").convert()
 empezar_rect = empezar_img.get_rect(center=(200, 400))
 salir_img = pygame.image.load("assets/salir.png").convert()
@@ -293,6 +297,7 @@ pos_pausa = pausa_rect
 pos_play = play_rect
 pos_comprar = comprar_rect
 pos_seleccionar = seleccionar_rect
+compra1 = False
 reinicio = "save_data/reinicio.txt"
 with open(reinicio, "r") as f:
     reiniciar = json.load(f)
@@ -363,9 +368,10 @@ while True:
             if pos_seleccionar.collidepoint(event.pos) and tienda:
                 imagen_jugador = imagen_jugador2
             if pos_comprar.collidepoint(event.pos) and tienda:
-                if monedas_totales >= 5 and eleccion == 1:
+                if monedas_totales >= 5 and eleccion == 1 and compra1 == False:
                     monedas_totales -= 5
                     imagen_jugador = imagen_moneda
+                    compra1 = True
             if pos_empezar.collidepoint(event.pos) and menu:
                 menu = False
                 vivo = 1
@@ -429,6 +435,8 @@ while True:
         pantalla.blit(FONDOJUEGO, (0, 0))
         jugador_girado2 = girar_jugador(imagen_jugador2)
         pantalla.blit(jugador_girado2, rect_jugador2)
+        if compra1:
+            comprar_img = yacomprado_img
         pantalla.blit(comprar_img, comprar_rect)
         pantalla.blit(seleccionar_img, seleccionar_rect)
         pygame.display.flip()
