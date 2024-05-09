@@ -101,7 +101,7 @@ def recoger_monedas(coinsl):
 
 
 def girar_jugador(jugador):
-    nuevo_jugador = pygame.transform.rotozoom(jugador, -movimiento_jugador * 3, 1)
+    nuevo_jugador = pygame.transform.rotozoom(jugador, -movimiento_jugador * girado, 1)
     return nuevo_jugador
 
 
@@ -220,6 +220,7 @@ numero = 0
 recogida = False
 imagen_moneda = pygame.image.load("assets/moneda.png")
 monedas = 0
+girado = 3
 try:
     with open("save_data/monedas_totales.txt") as archivo_monedas:
         monedas_totales = json.load(archivo_monedas)
@@ -243,12 +244,12 @@ FONDOJUEGO = pygame.image.load("assets/fondo1.png").convert()
 suelo_pos_x = 0
 tienda_img = pygame.image.load("assets/empezar.png").convert()
 tienda_rect = tienda_img.get_rect(center=(600, 400))
-comprar_imgo = pygame.image.load("assets/empezar.png").convert()
-comprar_img = pygame.image.load("assets/empezar.png").convert()
+comprar_imgo = pygame.image.load("assets/comprar.png").convert()
+comprar_img = pygame.image.load("assets/comprar.png").convert()
 comprar_rect = comprar_img.get_rect(center=(490, 400))
-yacomprado_img = pygame.image.load("assets/salir.png").convert()
+yacomprado_img = pygame.image.load("assets/yacomprado.png").convert()
 yacomprado_rect = yacomprado_img.get_rect(center=(490, 400))
-seleccionar_img = pygame.image.load("assets/empezar.png").convert()
+seleccionar_img = pygame.image.load("assets/seleccionar.png").convert()
 seleccionar_rect = seleccionar_img.get_rect(center=(310, 400))
 empezar_img = pygame.image.load("assets/empezar.png").convert()
 empezar_rect = empezar_img.get_rect(center=(200, 400))
@@ -269,6 +270,8 @@ play_rect = play_img.get_rect(center=(50, 50))
 imagen_jugador2 = pygame.image.load("assets/tortuga.png").convert_alpha()
 imagen_jugador = pygame.image.load("assets/tortuga.png").convert_alpha()
 imagen_jugador3 = pygame.image.load("assets/tortuga.png").convert_alpha()
+imagen_perry = pygame.image.load("assets/perry-sheet.png").convert_alpha()
+imagen_pou = pygame.image.load("assets/poufacha.png").convert_alpha()
 rect_jugador = imagen_jugador.get_rect(center=(400, 300))
 rect_jugador2 = imagen_jugador2.get_rect(center=(400, 300))
 imagen_obstaculos_abajo = pygame.image.load("assets/troncoabajo.png").convert_alpha()
@@ -347,14 +350,21 @@ while True:
                         imagen_jugador2 = imagen_jugador3
 
                     if eleccion == 1:
-                        imagen_jugador2 = imagen_moneda
+                        imagen_jugador2 = imagen_perry
+
+                    if eleccion == 2:
+                        imagen_jugador2 = imagen_pou
+                        girado = 25
             if event.key == pygame.K_RIGHT and tienda:
-                if eleccion < 1:
+                if eleccion < 2:
                     eleccion += 1
                     if eleccion == 0:
                         imagen_jugador2 = imagen_jugador3
                     if eleccion == 1:
-                        imagen_jugador2 = imagen_moneda
+                        imagen_jugador2 = imagen_perry
+                    if eleccion == 2:
+                        imagen_jugador2 = imagen_pou
+                        girado = 25
         if event.type == pygame.MOUSEBUTTONDOWN and vivo == 1:
             if pygame.mouse.get_pressed()[0]:
                 movimiento_jugador = 0
