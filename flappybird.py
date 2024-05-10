@@ -8,8 +8,18 @@ import json
 
 
 def dibujar_suelo(suelo_pos_xd):
-    pantalla.blit(suelo_imagen, (suelo_pos_xd, 550))
-    pantalla.blit(suelo_imagen, (suelo_pos_xd + 800, 550))
+    pantalla.blit(suelo_imagen, (suelo_pos_xd, 0))
+    pantalla.blit(suelo_imagen, (suelo_pos_xd + 800, 0))
+
+
+def dibujar_suelo2(suelo_pos_xd):
+    pantalla.blit(suelo_imagen2, (suelo_pos_xd, 0))
+    pantalla.blit(suelo_imagen2, (suelo_pos_xd + 800, 0))
+
+
+def dibujar_suelo3(suelo_pos_xd):
+    pantalla.blit(suelo_imagen3, (suelo_pos_xd, 0))
+    pantalla.blit(suelo_imagen3, (suelo_pos_xd + 800, 0))
 
 
 def crear_obstaculo():
@@ -136,8 +146,12 @@ def puntuacion_actualizada(estado_juego, rect_jugadord):
         pantalla.blit(FONDOJUEGO, (0, 0))
         pantalla.blit(jugador_girado, rect_jugadord)
         pantalla.blit(pruebagameover, (230, 200))
-        pantalla.blit(suelo_imagen, (suelo_pos_x, 550))
-        pantalla.blit(suelo_imagen, (320 - suelo_pos_x, 550))
+        pantalla.blit(suelo_imagen, (suelo_pos_x, 0))
+        pantalla.blit(suelo_imagen, (320 - suelo_pos_x, 0))
+        pantalla.blit(suelo_imagen2, (suelo_pos_x2, 0))
+        pantalla.blit(suelo_imagen2, (320 - suelo_pos_x2, 0))
+        pantalla.blit(suelo_imagen3, (suelo_pos_x3, 0))
+        pantalla.blit(suelo_imagen3, (320 - suelo_pos_x3, 0))
         pantalla.blit(game_over, game_over_rect)
         pantalla.blit(mejor_puntuacion_surface, mejor_puntuacion_rect)
         pantalla.blit(mejor_puntuacion_texto, mejor_puntuacion_texto_rect)
@@ -193,8 +207,12 @@ def menu_pausa(lista_obstaculosl, coinsll):
     dibujar_moneda(coinsll)
     pantalla.blit(seccio_transparent, (0, 0))
     pantalla.blit(pruebagameover, (230, 200))
-    pantalla.blit(suelo_imagen, (suelo_pos_x, 550))
-    pantalla.blit(suelo_imagen, (320 - suelo_pos_x, 550))
+    pantalla.blit(suelo_imagen, (suelo_pos_x, 0))
+    pantalla.blit(suelo_imagen, (320 - suelo_pos_x, 0))
+    pantalla.blit(suelo_imagen2, (suelo_pos_x2, 0))
+    pantalla.blit(suelo_imagen2, (320 - suelo_pos_x2, 0))
+    pantalla.blit(suelo_imagen3, (suelo_pos_x3, 0))
+    pantalla.blit(suelo_imagen3, (320 - suelo_pos_x3, 0))
     pantalla.blit(mejor_puntuacion_surface, mejor_puntuacion_rect)
     pantalla.blit(mejor_puntuacion_texto, mejor_puntuacion_texto_rect)
     pantalla.blit(monedas_texto, monedas_texto_rect)
@@ -237,18 +255,27 @@ try:
         mejor_puntuacion = json.load(archivo_mejor_puntuacion)
 except:
     mejor_puntuacion = 0
+seleccionado_img = pygame.image.load("assets/seleccionado.png")
+seleccionado_rect = seleccionado_img.get_rect(center=(490, 400))
 pruebagameover = pygame.image.load("assets/pruebagameover.png")
-suelo_imagen = pygame.image.load("assets/prueba.png").convert()
-suelo_rect = suelo_imagen.get_rect(center=(800, 0))
-FONDOJUEGO = pygame.image.load("assets/fondo1.png").convert()
+suelo_imagen = pygame.image.load("assets/capa2.png").convert_alpha()
+suelo_rect = suelo_imagen.get_rect(center=(0, 0))
+suelo_imagen2 = pygame.image.load("assets/capa3.png").convert_alpha()
+suelo_rect2 = suelo_imagen2.get_rect(center=(0, 0))
+suelo_imagen3 = pygame.image.load("assets/capa4.png").convert_alpha()
+suelo_rect3 = suelo_imagen3.get_rect(center=(0, 0))
+FONDOJUEGO = pygame.image.load("assets/capa1.png").convert()
 suelo_pos_x = 0
-tienda_img = pygame.image.load("assets/empezar.png").convert()
+suelo_pos_x2 = 0
+suelo_pos_x3 = 0
+tienda_img = pygame.image.load("assets/tienda.png").convert()
 tienda_rect = tienda_img.get_rect(center=(600, 400))
 comprar_imgo = pygame.image.load("assets/comprar.png").convert()
 comprar_img = pygame.image.load("assets/comprar.png").convert()
 comprar_rect = comprar_img.get_rect(center=(490, 400))
 yacomprado_img = pygame.image.load("assets/yacomprado.png").convert()
 yacomprado_rect = yacomprado_img.get_rect(center=(490, 400))
+seleccionar_imgo = pygame.image.load("assets/seleccionar.png").convert()
 seleccionar_img = pygame.image.load("assets/seleccionar.png").convert()
 seleccionar_rect = seleccionar_img.get_rect(center=(310, 400))
 empezar_img = pygame.image.load("assets/empezar.png").convert()
@@ -301,6 +328,7 @@ pos_play = play_rect
 pos_comprar = comprar_rect
 pos_seleccionar = seleccionar_rect
 compra1 = False
+compra2 = False
 reinicio = "save_data/reinicio.txt"
 with open(reinicio, "r") as f:
     reiniciar = json.load(f)
@@ -348,10 +376,16 @@ while True:
                     eleccion -= 1
                     if eleccion == 0:
                         imagen_jugador2 = imagen_jugador3
-
+                        girado = 3
+                    if eleccion == 0:
+                        seleccionar_img = seleccionar_imgo
+                    if eleccion == 1 and compra1 == False:
+                        seleccionar_img = seleccionar_imgo
+                    if eleccion == 2 and compra2 == False:
+                        seleccionar_img = seleccionar_imgo
                     if eleccion == 1:
                         imagen_jugador2 = imagen_perry
-
+                        girado = 3
                     if eleccion == 2:
                         imagen_jugador2 = imagen_pou
                         girado = 25
@@ -360,8 +394,17 @@ while True:
                     eleccion += 1
                     if eleccion == 0:
                         imagen_jugador2 = imagen_jugador3
+                        girado = 3
+                    if eleccion == 0:
+                        seleccionar_img = seleccionar_imgoç
+                    if eleccion == 1 and compra1 == False:
+                        seleccionar_img = seleccionar_imgo
+                    if eleccion == 2 and compra2 == False:
+                        seleccionar_img = seleccionar_imgo
                     if eleccion == 1:
                         imagen_jugador2 = imagen_perry
+                        girado = 3
+
                     if eleccion == 2:
                         imagen_jugador2 = imagen_pou
                         girado = 25
@@ -377,11 +420,23 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if pos_seleccionar.collidepoint(event.pos) and tienda:
                 imagen_jugador = imagen_jugador2
+                selec = True
+                if selec:
+                    if compra1 and eleccion == 1:
+                        seleccionar_img = seleccionado_img
+                        selec = False
+                    if compra2 and eleccion == 2:
+                        seleccionar_img = seleccionado_img
+                        selec = False
             if pos_comprar.collidepoint(event.pos) and tienda:
                 if monedas_totales >= 5 and eleccion == 1 and compra1 == False:
                     monedas_totales -= 5
-                    imagen_jugador = imagen_moneda
                     compra1 = True
+                    comprar_img = yacomprado_img
+                if monedas_totales >= 10 and eleccion == 2 and compra2 == False:
+                    monedas_totales -= 10
+                    compra2 = True
+                    comprar_img = yacomprado_img
             if pos_empezar.collidepoint(event.pos) and menu:
                 menu = False
                 vivo = 1
@@ -442,11 +497,11 @@ while True:
 
     pantalla.blit(FONDOJUEGO, (0, 0))
     if tienda:
+        if eleccion == 0:
+            seleccionar_img = seleccionado_img
         pantalla.blit(FONDOJUEGO, (0, 0))
         jugador_girado2 = girar_jugador(imagen_jugador2)
         pantalla.blit(jugador_girado2, rect_jugador2)
-        if compra1:
-            comprar_img = yacomprado_img
         pantalla.blit(comprar_img, comprar_rect)
         pantalla.blit(seleccionar_img, seleccionar_rect)
         pygame.display.flip()
@@ -455,10 +510,15 @@ while True:
         coins.clear()
         movimiento_jugador = 0
         rect_jugador.centery += movimiento_jugador
-        jugador_girado = girar_jugador(imagen_jugador)
-        pantalla.blit(jugador_girado, rect_jugador)
-        suelo_pos_x -= 5
         dibujar_suelo(suelo_pos_x)
+        dibujar_suelo2(suelo_pos_x2)
+        dibujar_suelo3(suelo_pos_x3)
+        jugador_girado = girar_jugador(imagen_jugador)
+        suelo_pos_x -= 1
+        suelo_pos_x2 -= 2
+        suelo_pos_x3 -= 3
+        pantalla.blit(jugador_girado, rect_jugador)
+
         pantalla.blit(empezar_img, empezar_rect)
         pantalla.blit(salir_img, salir_rect)
         pantalla.blit(tienda_img, tienda_rect)
@@ -467,10 +527,20 @@ while True:
         clock.tick(60)
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
+        if suelo_pos_x2 <= -800:
+            suelo_pos_x2 = 0
+        if suelo_pos_x3 <= -800:
+            suelo_pos_x3 = 0
     if vivo == 1:
         pantalla.blit(pausa_img, pausa_rect)
         movimiento_jugador += caida
         rect_jugador.centery += movimiento_jugador
+        suelo_pos_x -= 1
+        suelo_pos_x2 -= 2
+        suelo_pos_x3 -= 3
+        dibujar_suelo(suelo_pos_x)
+        dibujar_suelo2(suelo_pos_x2)
+        dibujar_suelo3(suelo_pos_x3)
         jugador_girado = girar_jugador(imagen_jugador)
         pantalla.blit(jugador_girado, rect_jugador)
         vivo = colisiones_tubos(lista_obstaculos)
@@ -486,22 +556,29 @@ while True:
             print(monedas_totales)
             monedas_totales += 1
             puntuacion += 1
+
         puntuacion_actualizada("on", rect_jugador,)
-        suelo_pos_x -= 5
-        dibujar_suelo(suelo_pos_x)
         vivo = colisiones_tubos(lista_obstaculos)
         if puntuacion > mejor_puntuacion:
             mejor_puntuacion = puntuacion
         if suelo_pos_x <= -800:
             suelo_pos_x = 0
+        if suelo_pos_x2 <= -800:
+            suelo_pos_x2 = 0
+        if suelo_pos_x3 <= -800:
+            suelo_pos_x3 = 0
         if estado:
             if suelo_pos_x <= -800:
                 suelo_pos_x = 0
-            dibujar_suelo(suelo_pos_x)
+            if suelo_pos_x2 <= -800:
+                suelo_pos_x2 = 0
+            if suelo_pos_x3 <= -800:
+                suelo_pos_x3 = 0
             lista_obstaculos = mover_obstaculos(lista_obstaculos)
             dibujar_obstaculos(lista_obstaculos)
             coins = mover_moneda(coins)
             dibujar_moneda(coins)
+
             menu_pausa(lista_obstaculos, coins)
             pantalla.blit(reiniciar_img, reiniciar_rect)
             pantalla.blit(atras_img, atras_rect)
