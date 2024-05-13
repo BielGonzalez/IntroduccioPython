@@ -144,7 +144,6 @@ def puntuacion_actualizada(estado_juego, rect_jugadord):
         mejor_puntuacion_surface = fuente_juego.render(str(int(mejor_puntuacion)), True, (255, 255, 255))
         mejor_puntuacion_rect = mejor_puntuacion_surface.get_rect(center=(468.5, 380))
         pantalla.blit(FONDOJUEGO, (0, 0))
-        pantalla.blit(jugador_girado, rect_jugadord)
         pantalla.blit(pruebagameover, (230, 200))
         pantalla.blit(suelo_imagen, (suelo_pos_x, 0))
         pantalla.blit(suelo_imagen, (320 - suelo_pos_x, 0))
@@ -152,6 +151,7 @@ def puntuacion_actualizada(estado_juego, rect_jugadord):
         pantalla.blit(suelo_imagen2, (320 - suelo_pos_x2, 0))
         pantalla.blit(suelo_imagen3, (suelo_pos_x3, 0))
         pantalla.blit(suelo_imagen3, (320 - suelo_pos_x3, 0))
+        pantalla.blit(jugador_girado, rect_jugadord)
         pantalla.blit(game_over, game_over_rect)
         pantalla.blit(mejor_puntuacion_surface, mejor_puntuacion_rect)
         pantalla.blit(mejor_puntuacion_texto, mejor_puntuacion_texto_rect)
@@ -164,7 +164,7 @@ def puntuacion_actualizada(estado_juego, rect_jugadord):
         pantalla.blit(puntuacion_surface, puntuacion_rect)
         pantalla.blit(puntuacion_texto, puntuacion_texto_rect)
         pantalla.blit(play_img, play_rect)
-        menu_pausa(lista_obstaculos, coins)
+        menu_pausa(lista_obstaculos, coins,suelo_pos_x,suelo_pos_x2,suelo_pos_x3)
         pantalla.blit(reiniciar_img, reiniciar_rect)
         pantalla.blit(atras_img, atras_rect)
         pantalla.blit(exit_img, exit_rect)
@@ -178,7 +178,7 @@ def actualizar_mejor_puntuacion(puntuaciond, mejor_puntuaciond):
     return mejor_puntuaciond
 
 
-def menu_pausa(lista_obstaculosl, coinsll):
+def menu_pausa(lista_obstaculosl, coinsll,suelo_pos_x,suelo_pos_x2,suelo_pos_x3):
     puntuacion_surface = fuente_juego.render(str(int(puntuacion)), True, (255, 255, 255))
     puntuacion_rect = puntuacion_surface.get_rect(center=(468.5, 300))
     puntuacion_texto = fuente_juego_peque.render("PUNTUACION", True, (74, 200, 10))
@@ -205,14 +205,11 @@ def menu_pausa(lista_obstaculosl, coinsll):
     dibujar_obstaculos(lista_obstaculosl)
     coinsll = mover_moneda(coinsll)
     dibujar_moneda(coinsll)
+    dibujar_suelo(suelo_pos_x)
+    dibujar_suelo2(suelo_pos_x2)
+    dibujar_suelo3(suelo_pos_x3)
     pantalla.blit(seccio_transparent, (0, 0))
     pantalla.blit(pruebagameover, (230, 200))
-    pantalla.blit(suelo_imagen, (suelo_pos_x, 0))
-    pantalla.blit(suelo_imagen, (320 - suelo_pos_x, 0))
-    pantalla.blit(suelo_imagen2, (suelo_pos_x2, 0))
-    pantalla.blit(suelo_imagen2, (320 - suelo_pos_x2, 0))
-    pantalla.blit(suelo_imagen3, (suelo_pos_x3, 0))
-    pantalla.blit(suelo_imagen3, (320 - suelo_pos_x3, 0))
     pantalla.blit(mejor_puntuacion_surface, mejor_puntuacion_rect)
     pantalla.blit(mejor_puntuacion_texto, mejor_puntuacion_texto_rect)
     pantalla.blit(monedas_texto, monedas_texto_rect)
@@ -349,6 +346,9 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and menu:
+                menu = False
+                vivo = 1
             if event.key == pygame.K_SPACE and vivo == 1:
                 movimiento_jugador = 0
                 monedas_totales = monedas
@@ -500,10 +500,22 @@ while True:
         if eleccion == 0:
             seleccionar_img = seleccionado_img
         pantalla.blit(FONDOJUEGO, (0, 0))
+        dibujar_suelo(suelo_pos_x)
+        dibujar_suelo2(suelo_pos_x2)
+        dibujar_suelo3(suelo_pos_x3)
         jugador_girado2 = girar_jugador(imagen_jugador2)
         pantalla.blit(jugador_girado2, rect_jugador2)
+        suelo_pos_x -= 0.1
+        suelo_pos_x2 -= 0.2
+        suelo_pos_x3 -= 0.3
         pantalla.blit(comprar_img, comprar_rect)
         pantalla.blit(seleccionar_img, seleccionar_rect)
+        if suelo_pos_x <= -800:
+            suelo_pos_x = 0
+        if suelo_pos_x2 <= -800:
+            suelo_pos_x2 = 0
+        if suelo_pos_x3 <= -800:
+            suelo_pos_x3 = 0
         pygame.display.flip()
     if menu:
         lista_obstaculos.clear()
@@ -574,12 +586,12 @@ while True:
                 suelo_pos_x2 = 0
             if suelo_pos_x3 <= -800:
                 suelo_pos_x3 = 0
+            menu_pausa(lista_obstaculos, coins,suelo_pos_x,suelo_pos_x2,suelo_pos_x3)
             lista_obstaculos = mover_obstaculos(lista_obstaculos)
             dibujar_obstaculos(lista_obstaculos)
             coins = mover_moneda(coins)
             dibujar_moneda(coins)
 
-            menu_pausa(lista_obstaculos, coins)
             pantalla.blit(reiniciar_img, reiniciar_rect)
             pantalla.blit(atras_img, atras_rect)
             pantalla.blit(play_img, play_rect)
