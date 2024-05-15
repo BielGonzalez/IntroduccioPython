@@ -5,7 +5,7 @@ from pygame.locals import *
 import pygame
 import random
 import json
-
+import time
 
 def dibujar_suelo(suelo_pos_xd):
     pantalla.blit(suelo_imagen, (suelo_pos_xd, 0))
@@ -271,11 +271,25 @@ except:
     mejor_puntuacion = 0
 seleccionado_img = pygame.image.load("assets/seleccionado.png")
 seleccionado_rect = seleccionado_img.get_rect(center=(490, 400))
+sonidosi_img = pygame.image.load("assets/sonidosi.png")
+sonidosi_imgo = pygame.image.load("assets/sonidosi.png")
+sonidosi_rect = sonidosi_img.get_rect(center=(475, 360))
+sonidono_img = pygame.image.load("assets/sonidono.png")
+sonidono_imgo = pygame.image.load("assets/sonidono.png")
+sonidono_rect = sonidono_img.get_rect(center=(475,360))
+sonidono_recto = sonidono_img.get_rect(center=(400,500))
+sonidosi_recto = sonidono_img.get_rect(center=(400,500))
+facil_img = pygame.image.load("assets/facil.png")
+facil_rect = facil_img.get_rect(center=(400, 240))
+normal_img = pygame.image.load("assets/normal.png")
+normal_rect = normal_img.get_rect(center=(380, 290))
+dificil_img = pygame.image.load("assets/dificl.png")
+dificil_rect = dificil_img.get_rect(center=(420, 290))
 pruebagameover = pygame.image.load("assets/pruebagameover.png")
 suelo_imagen = pygame.image.load("assets/fondonubesnoche2.png").convert_alpha()
 suelo_imagen2 = pygame.image.load("assets/fondonubesnoche3.png").convert_alpha()
 suelo_imagen3 = pygame.image.load("assets/fondonubesnoche4.png").convert_alpha()
-FONDOJUEGO = pygame.image.load("assets/fondonubesnoche1.png ").convert()
+FONDOJUEGO = pygame.image.load("assets/fondonubesnoche1.png").convert()
 suelo_imagen4 = pygame.image.load("assets/fondonubesnoche5.png").convert_alpha()
 suelo_imagen1 = pygame.image.load("assets/capa2.png").convert_alpha()
 suelo_imagen21 = pygame.image.load("assets/capa3.png").convert_alpha()
@@ -285,7 +299,7 @@ suelo_imagen41 = pygame.image.load("assets/transparente.png").convert_alpha()
 suelo_imageno = pygame.image.load("assets/fondonubesnoche2.png").convert_alpha()
 suelo_imagen2o = pygame.image.load("assets/fondonubesnoche3.png").convert_alpha()
 suelo_imagen3o = pygame.image.load("assets/fondonubesnoche4.png").convert_alpha()
-FONDOJUEGOo = pygame.image.load("assets/fondonubesnoche1.png ").convert()
+FONDOJUEGOo = pygame.image.load("assets/fondonubesnoche1.png").convert()
 suelo_imagen4o = pygame.image.load("assets/fondonubesnoche5.png").convert_alpha()
 suelo_imagen1o = pygame.image.load("assets/capa2.png").convert_alpha()
 suelo_imagen21o = pygame.image.load("assets/capa3.png").convert_alpha()
@@ -319,7 +333,7 @@ pausa_rect = pausa_img.get_rect(center=(50, 50))
 reiniciar_img = pygame.image.load("assets/reiniciar.png").convert()
 reiniciar_rect = reiniciar_img.get_rect(center=(325, 500))
 reiniciar_puntuaciones_img = pygame.image.load("assets/reiniciar.png").convert()
-reiniciar_puntuaciones_rect = reiniciar_puntuaciones_img.get_rect(center=(100, 100))
+reiniciar_puntuaciones_rect = reiniciar_puntuaciones_img.get_rect(center=(330, 360))
 atras_img = pygame.image.load("assets/atras.png").convert()
 atras_rect = atras_img.get_rect(center=(400, 500))
 exit_img = pygame.image.load("assets/exit.png").convert()
@@ -332,12 +346,20 @@ imagen_jugador3 = pygame.image.load("assets/tortuga.png").convert_alpha()
 imagen_jugador3o = pygame.image.load("assets/tortuga.png").convert_alpha()
 imagen_perry = pygame.image.load("assets/perry-sheet.png").convert_alpha()
 imagen_pou = pygame.image.load("assets/poufacha.png").convert_alpha()
+imagen_goku = pygame.image.load("assets/goku.png").convert_alpha()
 rect_jugador = imagen_jugador.get_rect(center=(400, 300))
 rect_jugador2 = imagen_jugador2.get_rect(center=(400, 300))
 imagen_obstaculos_abajo = pygame.image.load("assets/troncoabajo.png").convert_alpha()
 imagen_obstaculos_arriba = pygame.image.load("assets/troncoarriba.png").convert_alpha()
+imagen_obstaculos_abajoo = pygame.image.load("assets/troncoabajo.png").convert_alpha()
+imagen_obstaculos_arribao = pygame.image.load("assets/troncoarriba.png").convert_alpha()
+imagen_obstaculos_abajo1 = pygame.image.load("assets/habichuelas.png").convert_alpha()
+imagen_obstaculos_arriba1 = pygame.image.load("assets/habichuelas.png").convert_alpha()
+imagen_obstaculos_abajo1o = pygame.image.load("assets/habichuelas.png").convert_alpha()
+imagen_obstaculos_arriba1o = pygame.image.load("assets/habichuelas.png").convert_alpha()
 lista_obstaculos = []
 coins = []
+sonido = True
 menu = True
 eleccion_fondo = 0
 tienda = False
@@ -362,9 +384,17 @@ pos_exit = exit_rect
 pos_pausa = pausa_rect
 pos_play = play_rect
 pos_comprar = comprar_rect
+pos_ajustes =ajustes_rect
 pos_seleccionar = seleccionar_rect
+pos_sonidono = sonidono_rect
+pos_sonidosi = sonidosi_rect
 compra1 = False
+imagen_obstaculos_abajo = imagen_obstaculos_abajo1o
+imagen_obstaculos_arriba = imagen_obstaculos_arriba1o
 compra2 = False
+compra3 = False
+ajustes = False
+sonidoo = True
 reinicio = "save_data/reinicio.txt"
 with open(reinicio, "r") as f:
     reiniciar = json.load(f)
@@ -374,6 +404,7 @@ archivo_monedas_path = "save_data/monedas_totales.txt"
 archivo_mejor_puntuacion_path = "save_data/mejor_puntuacion.txt"
 event = pygame.event.wait()
 pygame.draw.rect(seccio_transparent, NEGRE_TRANSPARENT, (0, 0, 800, 600))
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -397,6 +428,9 @@ while True:
                 menu = True
             if event.key == pygame.K_ESCAPE and fondos:
                 fondos = False
+                menu = True
+            if event.key == pygame.K_ESCAPE and vivo == 6:
+                ajustes = False
                 menu = True
             if event.key == pygame.K_SPACE and vivo == 2:
                 if not menu:
@@ -433,17 +467,26 @@ while True:
                     if eleccion == 2 and compra2 == False:
                         seleccionar_img = seleccionar_imgo
                         comprar_img = comprar_imgo
+                    if eleccion == 3 and compra3 == False:
+                        seleccionar_img = seleccionar_imgo
+                        comprar_img = comprar_imgo
                     if eleccion == 2 and compra2:
                         comprar_img = yacomprado_img
+                    if eleccion == 3 and compra3:
+                        comprar_img = yacomprado_img
                     if eleccion == 2 and imagen_jugador == imagen_pou:
+                        seleccionar_img = seleccionado_img
+                    if eleccion == 3 and imagen_jugador == imagen_goku:
                         seleccionar_img = seleccionado_img
                     if eleccion == 1:
                         imagen_jugador2 = imagen_perry
 
                     if eleccion == 2 :
                         imagen_jugador2 = imagen_pou
+                    if eleccion == 3:
+                        imagen_jugador2 = imagen_goku
             if event.key == pygame.K_RIGHT and tienda:
-                if eleccion < 2:
+                if eleccion < 3:
                     eleccion += 1
                     if eleccion == 0:
                         imagen_jugador2 = imagen_jugador3
@@ -465,24 +508,37 @@ while True:
                         comprar_img = comprar_imgo
                     if eleccion == 2 and compra2:
                         comprar_img = yacomprado_img
+                    if eleccion == 3 and compra3 == False:
+                        seleccionar_img = seleccionar_imgo
+                        comprar_img = comprar_imgo
+                    if eleccion == 3 and compra3:
+                        comprar_img = yacomprado_img
                     if eleccion == 2 and imagen_jugador == imagen_pou:
+                        seleccionar_img = seleccionado_img
+                    if eleccion == 3 and imagen_jugador == imagen_goku:
                         seleccionar_img = seleccionado_img
                     if eleccion == 1:
                         imagen_jugador2 = imagen_perry
 
                     if eleccion == 2:
                         imagen_jugador2 = imagen_pou
+                    if eleccion == 3:
+                        imagen_jugador2 = imagen_goku
 
             if event.key == pygame.K_LEFT and fondos:
                 if eleccion > 0:
                     eleccion -= 1
                     if eleccion == 0:
+                        imagen_obstaculos_abajo = imagen_obstaculos_abajo1o
+                        imagen_obstaculos_arriba = imagen_obstaculos_arriba1o
                         suelo_imagen = suelo_imageno
                         suelo_imagen2 = suelo_imagen2o
                         suelo_imagen3 = suelo_imagen3o
                         FONDOJUEGO = FONDOJUEGOo
                         suelo_imagen4 = suelo_imagen4o
                     if eleccion == 1:
+                        imagen_obstaculos_abajo = imagen_obstaculos_abajoo
+                        imagen_obstaculos_arriba = imagen_obstaculos_arribao
                         suelo_imagen = suelo_imagen1
                         suelo_imagen2 = suelo_imagen21
                         suelo_imagen3 = suelo_imagen31
@@ -492,12 +548,16 @@ while True:
                 if eleccion < 1:
                     eleccion += 1
                     if eleccion == 0:
+                        imagen_obstaculos_abajo = imagen_obstaculos_abajo1o
+                        imagen_obstaculos_arriba = imagen_obstaculos_arriba1o
                         suelo_imagen = suelo_imageno
                         suelo_imagen2 = suelo_imagen2o
                         suelo_imagen3 = suelo_imagen3o
                         FONDOJUEGO = FONDOJUEGOo
                         suelo_imagen4 = suelo_imagen4o
                     if eleccion == 1:
+                        imagen_obstaculos_abajo = imagen_obstaculos_abajoo
+                        imagen_obstaculos_arriba = imagen_obstaculos_arribao
                         suelo_imagen = suelo_imagen1
                         suelo_imagen2 = suelo_imagen21
                         suelo_imagen3 = suelo_imagen31
@@ -513,7 +573,19 @@ while True:
             lista_obstaculos.extend(prueba2)
             coins.extend(crear_moneda(c, coins))
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if pos_sonidosi.collidepoint(event.pos) and ajustes and sonidoo:
+                print("mamahuevdyyhbo")
+                sonidosi_img = sonidono_imgo
+                sonidoo = False
+                pygame.mixer.music.play(-1)
+            elif pos_sonidono.collidepoint(event.pos) and ajustes and sonidoo == False:
+                sonidosi_img = sonidosi_imgo
+                sonidoo = True
+                pygame.mixer.music.stop()
             if pos_seleccionar.collidepoint(event.pos) and tienda:
+                if eleccion == 0:
+                    numero = 0
+                    girado = 3
                 if compra1:
                     imagen_jugador = imagen_jugador2
                     girado = 3
@@ -522,13 +594,24 @@ while True:
                 if compra1 and eleccion == 1:
                     numero = 1
                     girado = 3
-                if compra2:
+                if compra2 and eleccion == 2:
                     imagen_jugador = imagen_jugador2
                     girado = 25
                 if compra2 and eleccion == 2:
                     numero = 2
+                if compra3 and eleccion == 3:
+                    imagen_jugador = imagen_jugador2
+                if compra3 and eleccion == 3:
+                    numero = 3
+                    girado = 3
                 selec = True
                 if selec:
+                    if eleccion == 0 and numero == 0:
+                        seleccionar_img = seleccionado_img
+                        selec = False
+                    if numero == 0 and eleccion == 0:
+                        seleccionar_img = seleccionar_imgo
+                        selec = False
                     if compra1 and eleccion == 1 and numero == 1:
                         seleccionar_img = seleccionado_img
                         selec = False
@@ -541,6 +624,12 @@ while True:
                     if compra2 == False and numero == 2 and eleccion == 2:
                         seleccionar_img = seleccionar_imgo
                         selec = False
+                    if compra3 and eleccion == 3 and numero == 3:
+                        seleccionar_img = seleccionado_img
+                        selec = False
+                    if compra3 == False and numero == 3 and eleccion == 3:
+                        seleccionar_img = seleccionar_imgo
+                        selec = False
             if pos_comprar.collidepoint(event.pos) and tienda:
                 if monedas_totales >= 5 and eleccion == 1 and compra1 == False:
                     monedas_totales -= 5
@@ -550,6 +639,11 @@ while True:
                 if monedas_totales >= 10 and eleccion == 2 and compra2 == False:
                     monedas_totales -= 10
                     compra2 = True
+                    comprar_img = yacomprado_img
+                    comprar.play()
+                if monedas_totales >= 30 and eleccion == 3 and compra3 == False:
+                    monedas_totales -= 30
+                    compra3 = True
                     comprar_img = yacomprado_img
                     comprar.play()
             if pos_empezar.collidepoint(event.pos) and menu:
@@ -574,8 +668,7 @@ while True:
                 menu = False
 
                 vivo = 5
-            if pos_reiniciar_puntuacion.collidepoint(event.pos) and menu:
-                print("Asdas")
+            if pos_reiniciar_puntuacion.collidepoint(event.pos) and ajustes:
                 monedas_totales = 0
                 mejor_puntuacion = 0
                 with open("save_data/monedas_totales.txt", "w") as archivo_monedas:
@@ -596,10 +689,13 @@ while True:
                 if pos_pausa.collidepoint(event.pos) and vivo == 1:
                     estado = True
                     pygame.time.set_timer(CREAROBSTACULO, 2000)
+                if pos_ajustes.collidepoint(event.pos) and menu:
+                    menu = False
+                    ajustes = True
                 if pos_atras.collidepoint(event.pos) and vivo == 2:
                     estado = False
                     puntuacion = 0
-                    pygame.time.set_timer(CREAROBSTACULO, 1500)
+                    pygame.time.set_timer(CREAROBSTACULO, 2000)
                     vivo = 2
                     lista_obstaculos.clear()
                     coins.clear()
@@ -617,12 +713,23 @@ while True:
                     sys.exit()
 
     pantalla.blit(FONDOJUEGO, (0, 0))
+
     if ajustes:
+        vivo = 6
         pantalla.blit(FONDOJUEGO, (0, 0))
         dibujar_suelo(suelo_pos_x)
         dibujar_suelo2(suelo_pos_x2)
         dibujar_suelo3(suelo_pos_x3)
         dibujar_suelo4(suelo_pos_x4)
+        pantalla.blit(pruebagameover, (230, 200))
+        pantalla.blit(reiniciar_puntuaciones_img,reiniciar_puntuaciones_rect)
+        pantalla.blit(facil_img, facil_rect)
+        pantalla.blit(normal_img, normal_rect)
+        pantalla.blit(dificil_img, dificil_rect)
+        if sonido and ajustes:
+            pantalla.blit(sonidosi_img, sonidosi_rect)
+        if sonido and ajustes:
+            pantalla.blit(sonidosi_img, sonidosi_rect)
         suelo_pos_x -= 0.2
         suelo_pos_x2 -= 0.4
         suelo_pos_x3 -= 0.6
@@ -704,7 +811,6 @@ while True:
         pantalla.blit(tienda_img, tienda_rect)
         pantalla.blit(ajustes_img, ajustes_rect)
         pantalla.blit(fondos_img, fondos_rect)
-        pantalla.blit(reiniciar_puntuaciones_img,reiniciar_puntuaciones_rect)
         pygame.display.flip()
         clock.tick(60)
         if suelo_pos_x <= -800:
